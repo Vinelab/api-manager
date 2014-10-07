@@ -1,0 +1,23 @@
+{
+    "name": "vinelab/api",
+    "description": "",
+    "authors": [
+        {
+            "name": "Mahmoud Zalt",
+            "email": "mahmoud@vinelab.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "4.2.*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations"
+        ],
+        "psr-0": {
+            "Vinelab\\Api\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}

@@ -2,7 +2,9 @@
 /**
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
  */
-interface MapperInterface {
+interface Mappable {
 
+
+    public function map(array $data);
 
 }

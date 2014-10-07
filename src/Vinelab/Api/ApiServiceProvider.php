@@ -47,7 +47,7 @@ class ApiServiceProvider extends ServiceProvider {
         // Register 'ApiFacade' instance container to our ApiFacade object
         $this->app['api'] = $this->app->share(function()
             {
-                return $this->app->make('Vinelab\Api\ApiManager');
+                return $this->app->make('Vinelab\Api\Api');
             });
 
         // Shortcut so developers don't need to add an Alias in app/config/app.php

@@ -7,20 +7,43 @@
 
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\Paginator;
-use Lib\Api\Mappers\MapperInterface;
 use Illuminate\Support\Facades\App;
+use Illuminate\Config\Repository;
+use Vinelab\Api\ErrorHandler;
+use Vinelab\Api\Responder;
 
+
+/**
+ * Class Api
+ * @package Vinelab\Api
+ */
 class Api {
 
-    // TODO: get this from the config file
-    private $mappers_base_namespace = 'Lib\Api\Mappers\\';
+    private $mappers_base_namespace;
 
+    /**
+     * @var
+     */
     protected $api;
 
-    public function __construct()
-    {
-        $this->error = App::make('Vinelab\Api\ErrorHandler');
-        $this->responder = App::make('Vinelab\Api\Responder');
+    /**
+     * @var mixed
+     */
+    protected $configurations;
+
+    public function __construct(
+        Responder               $responder,
+        ErrorHandler            $error_handler,
+        Repository              $config_reader
+    ) {
+        $this->responder        = $responder;
+        $this->error            = $error_handler;
+        $this->config_reader    = $config_reader;
+
+        // reading the config file and storing it in the 'configurations' variable
+        $this->configurations         = $this->config_reader->get('api::api');
+        // assigning the 'mappers_base_namespace' to its value from the config file
+        $this->mappers_base_namespace = $this->configurations['mappers'];
     }
 
     /**
@@ -56,21 +79,22 @@ class Api {
         {
             $total = $data->getTotal();
             $page = $data->getCurrentPage();
-
-            // TODO: merge other arguments ex: status...
+//            $arguments = array_slice(func_get_args(), 2);
+//            $status = ( isset($arguments[0]) ) ? $arguments[0] : null;
         }
         // Otherwise we take the arguments passed to this function and pass them as is.
         else
         {
             $arguments = array_slice(func_get_args(), 2);
 
-            $total = $arguments[0];
-            $page = $arguments[1];
+            $total = ( isset($arguments[0]) ) ? $arguments[0] : null;
+            $page = ( isset($arguments[1]) ) ? $arguments[1] : null;
+//            $status = ( isset($arguments[2]) ) ? $arguments[2] : null;
         }
 
         // In the case of a collection all we need is the data as a Traversable so that we
         // iterate and map each item.
-        if ($data instanceof Collection) $data = $data->all();
+        if ($data instanceof Collection) $data = $data->toArray();
         // Leave traversing data till the end of the pipeline so that any transformation
         // that happened so far must have transformed them into an array.
         if ($data instanceof Paginator) $data = $data->toArray()['data'];

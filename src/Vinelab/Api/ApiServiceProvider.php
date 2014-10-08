@@ -50,6 +50,7 @@ class ApiServiceProvider extends ServiceProvider {
                 return $this->app->make('Vinelab\Api\Api');
             });
 
+
         // Shortcut so developers don't need to add an Alias in app/config/app.php
         $this->app->booting(function()
             {

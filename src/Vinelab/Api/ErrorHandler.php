@@ -6,13 +6,14 @@ use Illuminate\Support\Facades\Response;
 
 class ErrorHandler {
 
-    public function handle($exception, $code = 1000, $status = 500, $headers = [], $options = 0)
+    public function handle($exception, $code = 0, $status = 500, $headers = [], $options = 0)
     {
+
         // If the exception is on of ours then treat it as implemented.
         if ($exception instanceof ApiException)
         {
             $code = $exception->getCode();
-            $message = $exception->messages();
+            $message = $exception->getMessages($code, $status);
         }
         // This is a generic, non-supported exception so we'll just treat it as so.
         elseif ($exception instanceof Exception or $exception instanceof RuntimeException)

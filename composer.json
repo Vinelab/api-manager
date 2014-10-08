@@ -1,6 +1,7 @@
 {
     "name": "vinelab/api",
-    "description": "",
+    "description": "Laravel API Manager Package",
+    "keywords": ["api", "laravel", "package"],
     "authors": [
         {
             "name": "Mahmoud Zalt",

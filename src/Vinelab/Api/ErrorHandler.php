@@ -8,6 +8,7 @@ class ErrorHandler {
 
     public function handle($exception, $code = 0, $status = 500, $headers = [], $options = 0)
     {
+        $message = $exception;
 
         // If the exception is on of ours then treat it as implemented.
         if ($exception instanceof ApiException)

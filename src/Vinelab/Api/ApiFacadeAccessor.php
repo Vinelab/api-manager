@@ -11,6 +11,6 @@ class ApiFacadeAccessor extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'api';
+        return 'vinelab.api';
     }
 }

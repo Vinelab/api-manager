@@ -45,7 +45,7 @@ class ApiServiceProvider extends ServiceProvider {
         //-------------
 
         // Register 'ApiFacade' instance container to our ApiFacade object
-        $this->app['api'] = $this->app->share(function()
+        $this->app['vinelab.api'] = $this->app->share(function()
             {
                 return $this->app->make('Vinelab\Api\Api');
             });
@@ -73,7 +73,7 @@ class ApiServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array();
+		return array('vinelab.api');
 	}
 
 }

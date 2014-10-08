@@ -1,4 +1,4 @@
-API Manager Package for Laravel
+API Manager
 ===================
 >API Manager Package for Laravel 4
 
@@ -6,22 +6,23 @@ API Manager Package for Laravel
 ### Install
 Via composer:
 
- 
-	 {
-	     "require": {
-	         "vinelab/cdn": "*"
-	     }
-	 }
+```php
+{
+     "require": {
+         "vinelab/cdn": "*"
+     }
+ }
+```
  
 Add the service provider to `app/config/app.php`:
 
+```php
+'providers' => array(
+    ...
+    'Vinelab\Api\ApiServiceProvider',
 
-	    'providers' => array(
-	        ...
-	        'Vinelab\Api\ApiServiceProvider',
-
-	    ),
-
+),
+```
 
 ## Configuration
 
@@ -33,7 +34,9 @@ and check it out at `app/config/packages/vinelab/api/api.php`
 
 You need to enter the mappers base namespace
 
-     'mappers' => 'Lib\Api\Mappers\\',
+```php
+'mappers' => 'Lib\Api\Mappers\\',
+```
 
 
 ## Usage
@@ -102,7 +105,7 @@ Error Example:
 RESULT EXAMPLE:
 ```json
 {
-    "status": 500,
+    "status": 200,
     "total": 30,
     "page": 1,
     "data": [
@@ -123,19 +126,18 @@ RESULT EXAMPLE:
             "title": "Aspernatur voluptas id ratione rerum et quis. Repellendus dolorem nihil sint maxime. Dolorum ex dolorum sit est recusandae.",
             "text": "Sit voluptatem voluptatem corporis. Excepturi eligendi quia maiores nesciunt quia. Ipsum voluptatem autem aspernatur pariatur.",
             "active": false
-        },
-        {
-            "id": 4,
-            "title": "Deleniti magni est similique. Consequatur repudiandae est vel occaecati. Cumque mollitia autem facilis aut fugit maxime. Error asperiores reprehenderit nesciunt nisi debitis nihil optio.",
-            "text": "Dolores doloribus itaque sit quae eum qui possimus. Dignissimos sit sequi nihil quis similique placeat. Magni velit molestiae eum quam. Provident architecto quis sit accusamus sit odio.",
-            "active": true
-        },
-        {
-            "id": 5,
-            "title": "Quos architecto eum quia ratione dicta facere quidem. Expedita aut sunt est tenetur sed. Fuga et alias commodi modi suscipit dignissimos voluptas amet. Est id laborum dignissimos eum quod.",
-            "text": "Accusamus eos ipsa et veritatis. Reprehenderit repellat repudiandae mollitia ipsum et iusto soluta. Voluptate qui omnis labore omnis. Sint sint laborum officiis quaerat architecto et.",
-            "active": true
         }
     ]
 }
 ```
+
+*(Optionally)* you can extend the `ApiException`:
+```php
+use Vinelab\Api\ApiException;
+
+class WhateverCustomException extends ApiException{
+	...
+}
+```
+
+

@@ -6,7 +6,7 @@
 //{
 //    public function map($data);
 //}
-trait Mappable
+trait MappableTrait
 {
     public abstract function map(array $data);
 }

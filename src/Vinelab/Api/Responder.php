@@ -24,7 +24,6 @@ class Responder {
      */
     public function respond($data, $total = null, $page = null, $status = 200, $headers = [], $options = 0)
     {
-
         $response = [
             'status' => $status,
         ];

@@ -41,7 +41,7 @@ You need to enter the mappers base namespace
 
 ## Usage
 
-1. you need to create a mapper for each model you want to return, and each mapper must implements `Mappable` 
+1. you need to create a mapper for each model you want to return, and each mapper must use the `Mappable` trait, in order to implement the `map()` function.
 here's an example of a mapper called `PostsMapper.php`
 
 ```php
@@ -49,14 +49,11 @@ here's an example of a mapper called `PostsMapper.php`
 
 use Vinelab\Api\Mappable;
 
-class PostsMapper implements Mappable {
-    /**
-     * @param $data
-     *
-     * @internal param \Post $post
-     * @return array
-     */
-    public function map(array $data)
+class PostsMapper implements PostsInterface {
+
+    use Mappable;
+
+    public function map($data)
     {
         return [
             'id'     => (int) $data['id'],
@@ -65,8 +62,9 @@ class PostsMapper implements Mappable {
             'active' => (boolean) $data['active']
         ];
     }
-    
+
 }
+
 ```
 
 2. From your controller you can use the `Api` Facade Class that contains these 2 important functions `respond` and `error`

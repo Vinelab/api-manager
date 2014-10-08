@@ -68,7 +68,7 @@ class Api {
         if ( ! is_object($mapper)) $mapper = $this->resolveMapperClassName($mapper);
 
         // All mappers must implement or extend the mapper interface.
-        if ( ! $mapper instanceof \Vinelab\Api\Mappable) dd('throw Exception...');
+//        if ( ! $mapper instanceof \Vinelab\Api\Mappable) dd('throw Exception...');
 
         // Check whether we should be iterating through data and mapping each item
         // or we've been passed an instance so that we pass it on as is.
@@ -98,10 +98,9 @@ class Api {
         // Leave traversing data till the end of the pipeline so that any transformation
         // that happened so far must have transformed them into an array.
         if ($data instanceof Paginator) $data = $data->toArray()['data'];
-        //                    ^^^^^^ replaces Traversable
 
         // call the map function of the mapper for each data in the $data array
-        $data = array_map([$mapper, 'map'], $data);
+        $data = (is_array($data)) ? array_map([$mapper, 'map'], $data) : $mapper->map($data);
 
         return call_user_func_array([$this->responder, 'respond'], [$data, $total, $page]);
     }

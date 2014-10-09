@@ -8,5 +8,5 @@
 //}
 trait MappableTrait
 {
-    public abstract function map(array $data);
+    public abstract function map($data);
 }

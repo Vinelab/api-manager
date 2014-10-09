@@ -25,11 +25,13 @@ class ResponderTest extends TestCase {
           'active' => true
         ];
 
+        $serialized_data = "O:8:\"stdClass\":2:{s:6:\"status\";i:200;s:4:\"data\";O:8:\"stdClass\":3:{s:2:\"id\";i:1;s:4:\"text\";s:43:\"Enim provident tempore reiciendis quit qui.\";s:6:\"active\";b:1;}}";
+
         $responder = new \Vinelab\Api\Responder();
 
-        $result = $responder->respond($data);
+        $result = serialize($responder->respond($data)->getData());
 
-        dd($result);
+        assertEquals($result, $serialized_data);
 
     }
 

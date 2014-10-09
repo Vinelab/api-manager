@@ -9,7 +9,7 @@ Via composer:
 ```php
 {
      "require": {
-         "vinelab/cdn": "*"
+         "vinelab/api": "*"
      }
  }
 ```
@@ -32,7 +32,7 @@ php artisan config:publish vinelab/api
 ```
 and check it out at `app/config/packages/vinelab/api/api.php`
 
-You need to enter the mappers base namespace
+You need to set the mappers base namespace
 
 ```php
 'mappers' => 'Lib\Api\Mappers\\',
@@ -41,9 +41,11 @@ You need to enter the mappers base namespace
 
 ## Setup
 
-1. you need to create a mapper for each model you want to return, and each mapper must use the `MappableTrait` trait, in order to implement the `map()` function.
-here's an example of a mapper called `PostsMapper.php`
+Create a mapper for each model you want to return, and each mapper must use the `MappableTrait` trait, in order to implement the `map()` function.
+here's an example of a mapper called `PostsMapper.php`.
+Note: you can override the argument data type of the `map` function, it can be an `array` or an object of the `model`
 
+Example mapper for a Post model:
 ```php
 <?php namespace Lib\Api\Mappers;
 
@@ -67,11 +69,10 @@ class PostsMapper implements PostsInterface {
 
 ```
 
-2. From your controller you can use the `Api` Facade Class that contains these 2 important functions `respond` and `error`.
-
 ### Usage and Responses
+From your controller you can use the `Api` Facade Class that contains these 2 important functions `respond` and `error`.
 
-The `Api::respond` can take different types of parameters, it can be instance of `Illuminate\Pagination\Paginator` or a  `model` object or a `Illuminate\Database\Eloquent\Collection` of models objects or an `array`.
+The `Api::respond` can take different types of parameters, it can be instance of `Illuminate\Pagination\Paginator` or a  `model` object or a `Illuminate\Database\Eloquent\Collection` of model objects or an `array`.
 
 The responses returned by this package follows the conventions of a [json api](http://jsonapi.org/format/) and all the standards of the [Build APIs You Won't Hate](https://leanpub.com/build-apis-you-wont-hate) book.
 

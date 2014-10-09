@@ -23,9 +23,8 @@ class ErrorHandler {
         // if not Exception or RuntimeException or a string then throw and API exception
         else
         {
-            throw new ApiException('handle() first parameter expects an instance of Exception or
-                                    RuntimeException or a string, ' . get_class($exception) . ' is
-                                    given.');
+            throw new ApiException('Argument 1 passed Vinelab\Api\ErrorHandler::handle() must be an instance of Exception or
+                                    RuntimeException or a string, ' . get_class($exception) . ' is given.');
         }
 
         return Response::json([

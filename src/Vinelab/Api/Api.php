@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Config\Repository;
 use Vinelab\Api\ErrorHandler;
 use Vinelab\Api\Responder;
-
+use Vinelab\Api\ApiException;
 
 /**
  * Class Api
@@ -52,6 +52,7 @@ class Api {
      * @param $mapper
      * @param $data
      *
+     * @throws ApiException
      * @internal param \the $model model name
      * @internal param int $status
      * @internal param null $total
@@ -67,42 +68,32 @@ class Api {
         // resolve the mapper class name into a mapper instance.
         if ( ! is_object($mapper)) $mapper = $this->resolveMapperClassName($mapper);
 
-        // All mappers must implement or extend the mapper interface.
-//        if ( ! $mapper instanceof \Vinelab\Api\Mappable) dd('throw Exception...');
+        // check if the mapper uses the MappableTrait Trait.
+        if ( ! key(class_uses($mapper)) == 'Vinelab\Api\MappableTrait' )
+        {
+            throw new ApiException('MappableTrait Trait is not used in your Mapper: ' . get_class($mapper) );
+        }
 
-        // Check whether we should be iterating through data and mapping each item
-        // or we've been passed an instance so that we pass it on as is.
-        // We also have support for paginators so where we extract the required data as needed,
-        // which helps dev pass in a paginator instance without messing around with it.
-        // When we get a paginator we format the args of the ApiResponder as needed.
+        $arguments = [];
+        // Check if data is instance of Paginator in order to handle the arguments in a specific way
+        // by adding the total and the page manually and taking the third argument as the status
         if ($data instanceof Paginator)
         {
-            $total = $data->getTotal();
-            $page = $data->getCurrentPage();
-//            $arguments = array_slice(func_get_args(), 2);
-//            $status = ( isset($arguments[0]) ) ? $arguments[0] : null;
-        }
-        // Otherwise we take the arguments passed to this function and pass them as is.
-        else
-        {
-            $arguments = array_slice(func_get_args(), 2);
-
-            $total = ( isset($arguments[0]) ) ? $arguments[0] : null;
-            $page = ( isset($arguments[1]) ) ? $arguments[1] : null;
-//            $status = ( isset($arguments[2]) ) ? $arguments[2] : null;
+            $arguments[0] = $data->getTotal();
+            $arguments[1] = $data->getCurrentPage();
         }
 
-        // In the case of a collection all we need is the data as a Traversable so that we
-        // iterate and map each item.
-        if ($data instanceof Collection) $data = $data->toArray();
-        // Leave traversing data till the end of the pipeline so that any transformation
-        // that happened so far must have transformed them into an array.
-        if ($data instanceof Paginator) $data = $data->toArray()['data'];
+        // skip first 2 arguments and save the rest in the arguments to be merged with the result before passing them
+        foreach (array_slice(func_get_args(), 2) as $arg) { $arguments[count($arguments)] = $arg; }
+
+        // In the case of a Collection or Paginator all we need is the data as a
+        // Traversable so that we iterate and map each item.
+        if ($data instanceof Collection or $data instanceof Paginator) $data = $data->all();
 
         // call the map function of the mapper for each data in the $data array
-        $data = (is_array($data)) ? array_map([$mapper, 'map'], $data) : $mapper->map($data);
+        $result[] = (is_array($data)) ? array_map([$mapper, 'map'], $data) : $mapper->map($data);
 
-        return call_user_func_array([$this->responder, 'respond'], [$data, $total, $page]);
+        return call_user_func_array([$this->responder, 'respond'], array_merge($result, $arguments));
     }
 
     /**

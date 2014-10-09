@@ -9,7 +9,7 @@ API Manager
 ```php
 {
      "require": {
-         "vinelab/api": "*"
+         "vinelab/api-manager": "*"
      }
  }
 ```
@@ -42,6 +42,9 @@ You need to set the mappers base namespace
 
 ## Setup
 This package expects to have **Mapper class** for each model you want to return via the API.
+#####Terminology:
+>A Mapper is a class that will takes raw data and returns it as presentable array ready for formatting.
+
 The class name should follow this convention `modelnameMapper` example (PostsMapper).
 Each mapper class must  have an implementation of a `map()` function, thus you should use the API `MappableTrait` trait. 
 >*(traits in php acts similarly to interfaces, with the ability to override the function signature)*.

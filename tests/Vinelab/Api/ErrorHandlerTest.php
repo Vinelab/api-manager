@@ -21,13 +21,13 @@ class ErrorHandlerTest extends TestCase {
 
         $message = "Something went wrong";
 
-        $serialized_data = "O:8:\"stdClass\":2:{s:6:\"status\";i:500;s:5:\"error\";O:8:\"stdClass\":2:{s:7:\"message\";s:20:\"Something went wrong\";s:4:\"code\";i:0;}}";
+        $expected_response = "{\"status\":500,\"error\":{\"message\":\"Something went wrong\",\"code\":0}}";
 
         $responder = new \Vinelab\Api\ErrorHandler();
 
-        $result = serialize($responder->handle($message)->getData());
+        $result = $responder->handle($message)->getContent();
 
-        assertEquals($result, $serialized_data);
+        assertEquals($result, $expected_response);
 
     }
 

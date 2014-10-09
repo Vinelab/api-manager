@@ -22,7 +22,7 @@ class Responder {
      * @internal param $arguments
      * @return \Illuminate\Http\JsonResponse
      */
-    public function respond($data, $total = null, $page = null, $status = 200, $headers = [], $options = 0)
+    public function respond(array $data, $total = null, $page = null, $status = 200, $headers = [], $options = 0)
     {
 
         $response = [

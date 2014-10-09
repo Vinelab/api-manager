@@ -16,7 +16,7 @@ class ResponderTest extends TestCase {
         parent::tearDown();
     }
 
-    public function testResponder()
+    public function testResponderWithArray()
     {
 
        $data = [
@@ -32,7 +32,9 @@ class ResponderTest extends TestCase {
         $result = $responder->respond($data)->getContent();
 
         assertEquals($result, $expected_response);
-
     }
+
+
+
 
 }

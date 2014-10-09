@@ -1,5 +1,5 @@
 {
-    "name": "vinelab/api",
+    "name": "vinelab/api-manager",
     "description": "Laravel API Manager Package",
     "keywords": ["api", "laravel", "package"],
     "authors": [

@@ -139,7 +139,7 @@ return Api::respond('PostsMapper', $data);
 ```json
 {
     "status": 200,
-    "total": 30,
+    "total": 3,
     "page": 1,
     "data": [
         {

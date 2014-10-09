@@ -69,21 +69,26 @@ class Api {
         if ( ! is_object($mapper)) $mapper = $this->resolveMapperClassName($mapper);
 
         // check if the mapper uses the MappableTrait Trait.
-        if ( ! key(class_uses($mapper)) == 'Vinelab\Api\MappableTrait' )
+        if ( ! array_key_exists('Vinelab\Api\MappableTrait', class_uses($mapper)) )
         {
             throw new ApiException('MappableTrait Trait is not used in your Mapper: ' . get_class($mapper) );
         }
 
         $arguments = [];
-        // Check if data is instance of Paginator in order to handle the arguments in a specific way
-        // by adding the total and the page manually and taking the third argument as the status
+        // if data is instance of Paginator then get the values of the total and the page from the paginator,
+        // and add them to the arguments array (total, page)
         if ($data instanceof Paginator)
         {
             $arguments[0] = $data->getTotal();
             $arguments[1] = $data->getCurrentPage();
         }
 
-        // skip first 2 arguments and save the rest in the arguments to be merged with the result before passing them
+        // skip the first 2 arguments and save the rest to the 'arguments array':
+        // > in case data is instance of Paginator then this will append all the arguments to the 'arguments array'
+        // starting by the third arguments which should be the 'status'.
+        // > in case data is is not instance of Paginator (means total and page are added manually as arguments)
+        // then this will add all the arguments to the 'arguments array' starting by the third arguments which
+        // should be the 'page'.
         foreach (array_slice(func_get_args(), 2) as $arg) { $arguments[count($arguments)] = $arg; }
 
         // In the case of a Collection or Paginator all we need is the data as a

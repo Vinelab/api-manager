@@ -3,9 +3,21 @@
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
  */
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Request;
 use Vinelab\Api\ApiException;
 
 class ErrorHandler {
+
+
+    /**
+     * @var Responder instance
+     */
+    protected $responder;
+
+    public function __construct(Responder $responder)
+    {
+        $this->responder = $responder;
+    }
 
     public function handle($exception, $code = 0, $status = 500, $headers = [], $options = 0)
     {
@@ -27,9 +39,11 @@ class ErrorHandler {
                                     RuntimeException or a string, ' . get_class($exception) . ' is given.');
         }
 
-        return Response::json([
+        $response = [
             'status' => $status,
             'error'  => compact('message', 'code')
-        ], $status, $headers, $options);
+        ];
+
+        return $this->responder->respond($response, $status, $headers, $options);
     }
 }

@@ -10,7 +10,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\App;
 use Illuminate\Config\Repository;
 use Vinelab\Api\ErrorHandler;
-use Vinelab\Api\Responder;
+use Vinelab\Api\ResponseHandler;
 use Vinelab\Api\ApiException;
 
 /**
@@ -32,11 +32,11 @@ class Api {
     protected $configurations;
 
     public function __construct(
-        Responder               $responder,
+        ResponseHandler         $response_handler,
         ErrorHandler            $error_handler,
         Repository              $config_reader
     ) {
-        $this->responder        = $responder;
+        $this->response_handler = $response_handler;
         $this->error            = $error_handler;
         $this->config_reader    = $config_reader;
 
@@ -99,7 +99,7 @@ class Api {
         // call the map function of the mapper for each data in the $data array
         $result[] = (is_array($data)) ? array_map([$mapper, 'map'], $data) : $mapper->map($data);
 
-        return call_user_func_array([$this->responder, 'respond'], array_merge($result, $arguments));
+        return call_user_func_array([$this->response_handler, 'respond'], array_merge($result, $arguments));
     }
 
     /**

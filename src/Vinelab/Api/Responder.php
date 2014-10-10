@@ -5,9 +5,14 @@
  */
 
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 
 class Responder {
+
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
 
     /**
      * @param $response
@@ -32,7 +37,6 @@ class Responder {
 
     }
 
-
     /**
      * Get url format from the content type header property
      *
@@ -40,9 +44,7 @@ class Responder {
      */
     public function getRequestFormat()
     {
-        return Request::format();
+        return $this->request->format();
     }
-
-
 
 }

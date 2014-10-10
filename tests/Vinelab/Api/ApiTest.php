@@ -6,6 +6,8 @@ use Vinelab\Api\ErrorHandler;
 use Vinelab\Api\Responder;
 use Vinelab\Api\Api;
 use Vinelab\Api\ApiException;
+use Illuminate\Http\Request;
+use Vinelab\Api\ResponseHandler;
 
 class ApiTest extends TestCase {
 
@@ -13,13 +15,16 @@ class ApiTest extends TestCase {
     {
         parent::setUp();
 
-        $this->responder = new Responder();
-        $this->error_handler = new ErrorHandler();
+        $this->request = new Request();
+        $this->response = new Responder($this->request);
+        $this->response_handler = new ResponseHandler($this->response);
+        $this->error_handler = new ErrorHandler($this->response);
+
         $this->config_reader = M::mock('Illuminate\Config\Repository');
         $this->config_reader->shouldReceive('get')->with('api::api')
             ->andReturn(['mappers' => 'Lib\Api\Mappers\\']);
 
-        $this->responder = new Api($this->responder, $this->error_handler, $this->config_reader);
+        $this->response_handler = new Api($this->response_handler, $this->error_handler, $this->config_reader);
 
     }
 
@@ -50,7 +55,7 @@ class ApiTest extends TestCase {
 
         $data = new Collection([$m_post_1, $m_post_2]);
 
-        $result = $this->responder->respond($mapper, $data)->getContent();
+        $result = $this->response_handler->respond($mapper, $data)->getContent();
 
         $expected_response = "{\"status\":200,\"data\":[{\"id\":1,\"text\":\"Enim provident tempore reiciendis quit qui.\",\"active\":true},{\"id\":2,\"text\":\"Provident tempore enim reiciendis quitqui.\",\"active\":false}]}";
 
@@ -77,7 +82,7 @@ class ApiTest extends TestCase {
 
         $data = new Collection([$m_post_1, $m_post_2]);
 
-        $result = $this->responder->respond($mapper, $data, 100, 1)->getContent();
+        $result = $this->response_handler->respond($mapper, $data, 100, 1)->getContent();
 
         $expected_response = "{\"status\":200,\"total\":100,\"page\":1,\"data\":[{\"id\":1,\"text\":\"Enim provident tempore reiciendis quit qui.\",\"active\":true},{\"id\":2,\"text\":\"Provident tempore enim reiciendis quitqui.\",\"active\":false}]}";
 
@@ -93,7 +98,6 @@ class ApiTest extends TestCase {
         $m_post_1->text = 'Enim provident tempore reiciendis quit qui.';
         $m_post_1->active = true;
         $m_post_1->shouldReceive('getAttribute')->passthru();
-
 
         $m_post_2 = M::mock('Post');
         $m_post_2->shouldReceive('setAttribute')->passthru();
@@ -113,7 +117,7 @@ class ApiTest extends TestCase {
 
         $expected_response = "{\"status\":200,\"total\":100,\"page\":1,\"data\":[{\"id\":1,\"text\":\"Enim provident tempore reiciendis quit qui.\",\"active\":true},{\"id\":2,\"text\":\"Provident tempore enim reiciendis quitqui.\",\"active\":false}]}";
 
-        $result = $this->responder->respond($mapper, $m_paginate)->getContent();
+        $result = $this->response_handler->respond($mapper, $m_paginate)->getContent();
 
         assertEquals($result, $expected_response);
     }

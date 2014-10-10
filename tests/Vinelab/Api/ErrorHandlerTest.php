@@ -1,12 +1,16 @@
 <?php namespace Vinelab\Api\Tests;
 
 use Illuminate\Support\Collection;
+use Illuminate\Http\Request;
 use Mockery as M;
 
 class ErrorHandlerTest extends TestCase {
 
     public function setUp()
     {
+        $this->request = new Request();
+        $this->responder = new \Vinelab\Api\Responder($this->request);
+
         parent::setUp();
     }
 
@@ -23,9 +27,9 @@ class ErrorHandlerTest extends TestCase {
 
         $expected_response = "{\"status\":500,\"error\":{\"message\":\"Something went wrong\",\"code\":0}}";
 
-        $responder = new \Vinelab\Api\ErrorHandler();
+        $error_handler = new \Vinelab\Api\ErrorHandler($this->responder);
 
-        $result = $responder->handle($message)->getContent();
+        $result = $error_handler->handle($message)->getContent();
 
         assertEquals($result, $expected_response);
 
@@ -36,13 +40,11 @@ class ErrorHandlerTest extends TestCase {
      */
     public function testErrorHandlerWithException()
     {
-
         $exception = new \Exception();
 
-        $responder = new \Vinelab\Api\ErrorHandler();
+        $error_handler = new \Vinelab\Api\ErrorHandler($this->responder);
 
-        $responder->handle($exception);
-
+        $error_handler->handle($exception);
     }
 
 

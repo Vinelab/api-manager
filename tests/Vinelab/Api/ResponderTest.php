@@ -1,12 +1,20 @@
 <?php namespace Vinelab\Api\Tests;
 
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Collection;
+use Vinelab\Api\Responder;
+use Illuminate\Http\Request;
+
 use Mockery as M;
 
 class ResponderTest extends TestCase {
 
     public function setUp()
     {
+
+        $this->request = new Request();
+        $this->responder = new Responder($this->request);
+
         parent::setUp();
     }
 
@@ -27,14 +35,11 @@ class ResponderTest extends TestCase {
 
         $expected_response = "{\"status\":200,\"data\":{\"id\":1,\"text\":\"Enim provident tempore reiciendis quit qui.\",\"active\":true}}";
 
-        $responder = new \Vinelab\Api\Responder();
+        $response_handler = new \Vinelab\Api\ResponseHandler($this->responder);
 
-        $result = $responder->respond($data)->getContent();
+        $result = $response_handler->respond($data)->getContent();
 
         assertEquals($result, $expected_response);
     }
-
-
-
 
 }

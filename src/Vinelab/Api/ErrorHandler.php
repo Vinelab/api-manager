@@ -8,7 +8,6 @@ use Vinelab\Api\ApiException;
 
 class ErrorHandler {
 
-
     /**
      * @var Responder instance
      */

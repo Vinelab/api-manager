@@ -5,7 +5,6 @@ use Mockery as M;
 use Vinelab\Api\ErrorHandler;
 use Vinelab\Api\Responder;
 use Vinelab\Api\Api;
-use Vinelab\Api\ApiException;
 use Illuminate\Http\Request;
 use Vinelab\Api\ResponseHandler;
 
@@ -25,7 +24,6 @@ class ApiTest extends TestCase {
             ->andReturn(['mappers' => 'Lib\Api\Mappers\\']);
 
         $this->response_handler = new Api($this->response_handler, $this->error_handler, $this->config_reader);
-
     }
 
     public function tearDown()
@@ -44,7 +42,6 @@ class ApiTest extends TestCase {
         $m_post_1->text = 'Enim provident tempore reiciendis quit qui.';
         $m_post_1->active = true;
         $m_post_1->shouldReceive('getAttribute')->passthru();
-
 
         $m_post_2 = M::mock('Post');
         $m_post_2->shouldReceive('setAttribute')->passthru();
@@ -121,6 +118,45 @@ class ApiTest extends TestCase {
 
         assertEquals($result, $expected_response);
     }
+
+
+    public function testRespondWithModel()
+    {
+        $m_post_1 = M::mock('Post');
+        $m_post_1->shouldReceive('setAttribute')->passthru();
+        $m_post_1->id = 1;
+        $m_post_1->text = 'Enim provident tempore reiciendis quit qui.';
+        $m_post_1->active = true;
+        $m_post_1->shouldReceive('getAttribute')->passthru();
+
+        $mapper = new DummyMapper();
+
+        $expected_response = "{\"status\":200,\"data\":{\"id\":1,\"text\":\"Enim provident tempore reiciendis quit qui.\",\"active\":true}}";
+
+        $result = $this->response_handler->respond($mapper, $m_post_1)->getContent();
+
+        assertEquals($result, $expected_response);
+    }
+
+    /**
+     * @expectedException        Vinelab\Api\ApiException
+     */
+    public function testRespondThrowsException()
+    {
+        $m_post_1 = M::mock('Post');
+        $m_post_1->shouldReceive('setAttribute')->passthru();
+        $m_post_1->id = 1;
+        $m_post_1->text = 'Enim provident tempore reiciendis quit qui.';
+        $m_post_1->active = true;
+        $m_post_1->shouldReceive('getAttribute')->passthru();
+
+        $expected_response = "{\"status\":200,\"data\":{\"id\":1,\"text\":\"Enim provident tempore reiciendis quit qui.\",\"active\":true}}";
+
+        $result = $this->response_handler->respond($m_post_1, $m_post_1)->getContent();
+
+        assertEquals($result, $expected_response);
+    }
+
 
 
 }

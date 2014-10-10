@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 use Mockery as M;
 
-class ResponderTest extends TestCase {
+class ResponseHandlerTest extends TestCase {
 
     public function setUp()
     {

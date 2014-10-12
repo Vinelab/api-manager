@@ -1,10 +1,12 @@
 <?php namespace Vinelab\Api;
 /**
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
+ * @author Abed Halawi <abed.halawi@vinelab.com>
  */
+use Vinelab\Api\ApiException;
+use Exception, RuntimeException;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Request;
-use Vinelab\Api\ApiException;
 
 class ErrorHandler {
 

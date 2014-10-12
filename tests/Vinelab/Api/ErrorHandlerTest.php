@@ -24,28 +24,54 @@ class ErrorHandlerTest extends TestCase {
     {
 
         $message = "Something went wrong";
-
-        $expected_response = "{\"status\":500,\"error\":{\"message\":\"Something went wrong\",\"code\":0}}";
-
         $error_handler = new \Vinelab\Api\ErrorHandler($this->responder);
 
-        $result = $error_handler->handle($message)->getContent();
+        $expected = [
+            'status' => 500,
+            'error'  => [
+                'code' => 0,
+                'message' => $message,
+            ]
+        ];
 
-        assertEquals($result, $expected_response);
+        $result = $error_handler->handle($message)->original;
 
+        $this->assertEquals($expected, $result);
     }
 
-    /**
-     * @expectedException Vinelab\Api\ApiException
-     */
-    public function testErrorHandlerWithException()
+    public function testErrorHandlerWithExceptionAndMessage()
     {
-        $exception = new \Exception();
-
+        $exception = new \Exception('testing exception');
         $error_handler = new \Vinelab\Api\ErrorHandler($this->responder);
+        $expected = [
+            'status' => 500,
+            'error'  => [
+                'code' => 0,
+                'message' => 'testing exception'
+            ]
+        ];
 
-        $error_handler->handle($exception);
+        $response = $error_handler->handle($exception)->original;
+
+        $this->assertEquals($expected, $response);
     }
 
+    public function testErrorHandlerWithExceptionAndMessageAndCode()
+    {
+        $exception = new \Exception('some exception', 1001);
+        $error_handler = new \Vinelab\Api\ErrorHandler($this->responder);
+        $expected = [
+            'status' => 401,
+            'error'  => [
+                'code' => 1001,
+                'message' => 'some exception'
+            ]
+        ];
+
+        $response = $error_handler->handle($exception, $exception->getCode(), 401)->original;
+
+        $this->assertEquals($expected, $response);
+        $this->assertInternalType('int', $response['status']);
+    }
 
 }

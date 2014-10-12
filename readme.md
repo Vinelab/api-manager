@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Vinelab/api-manager.svg)](https://travis-ci.org/Vinelab/api-manager)
+
 # API Manager
 
 A simple API response formatter and handler for Laravel. Beautify and unify your responses with the least effort possible.

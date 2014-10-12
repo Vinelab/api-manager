@@ -52,11 +52,27 @@ class ApiTest extends TestCase {
 
         $data = new Collection([$m_post_1, $m_post_2]);
 
-        $result = $this->response_handler->respond($mapper, $data)->getContent();
+        $result = $this->response_handler->respond($mapper, $data)->original;
 
-        $expected_response = "{\"status\":200,\"data\":[{\"id\":1,\"text\":\"Enim provident tempore reiciendis quit qui.\",\"active\":true},{\"id\":2,\"text\":\"Provident tempore enim reiciendis quitqui.\",\"active\":false}]}";
+        $expected = [
+            'status' => 200,
+            'data'   => [
+                [
+                    'id'     => 1,
+                    'text'   => 'Enim provident tempore reiciendis quit qui.',
+                    'active' => true
+                ],
+                [
+                    'id'     => 2,
+                    'text'   => 'Provident tempore enim reiciendis quitqui.',
+                    'active' => false
+                ]
+            ]
+        ];
 
-        assertEquals($result, $expected_response);
+        // $expected_response = "{\"status\":200,\"data\":[{\"id\":1,\"text\":\"Enim provident tempore reiciendis quit qui.\",\"active\":true},{\"id\":2,\"text\":\"Provident tempore enim reiciendis quitqui.\",\"active\":false}]}";
+
+        $this->assertEquals($result, $expected);
     }
 
     public function testRespondWithCollectionAndPagination()
@@ -79,11 +95,27 @@ class ApiTest extends TestCase {
 
         $data = new Collection([$m_post_1, $m_post_2]);
 
-        $result = $this->response_handler->respond($mapper, $data, 100, 1)->getContent();
+        $result = $this->response_handler->respond($mapper, $data, 100, 1)->original;
 
-        $expected_response = "{\"status\":200,\"total\":100,\"page\":1,\"data\":[{\"id\":1,\"text\":\"Enim provident tempore reiciendis quit qui.\",\"active\":true},{\"id\":2,\"text\":\"Provident tempore enim reiciendis quitqui.\",\"active\":false}]}";
+        $expected = [
+            'status' => 200,
+            'total' => 100,
+            'page' => 1,
+            'data' => [
+                [
+                    'id'     => 1,
+                    'text'   => 'Enim provident tempore reiciendis quit qui.',
+                    'active' => true
+                ],
+                [
+                    'id'     => 2,
+                    'text'   => 'Provident tempore enim reiciendis quitqui.',
+                    'active' => false
+                ]
+            ]
+        ];
 
-        assertEquals($result, $expected_response);
+        assertEquals($result, $expected);
     }
 
 
@@ -106,17 +138,33 @@ class ApiTest extends TestCase {
         $data = ([$m_post_1, $m_post_2]);
 
         $m_paginate = M::mock('Illuminate\Pagination\Paginator');
-        $m_paginate->shouldReceive('getTotal')->once()->andReturn(100);
+        $m_paginate->shouldReceive('getTotal')->once()->andReturn(300);
         $m_paginate->shouldReceive('getCurrentPage')->once()->andReturn(1);
         $m_paginate->shouldReceive('all')->andReturn($data);
 
         $mapper = new DummyMapper();
 
-        $expected_response = "{\"status\":200,\"total\":100,\"page\":1,\"data\":[{\"id\":1,\"text\":\"Enim provident tempore reiciendis quit qui.\",\"active\":true},{\"id\":2,\"text\":\"Provident tempore enim reiciendis quitqui.\",\"active\":false}]}";
+        $expected = [
+            'status' => 200,
+            'total' =>  300,
+            'page' => 1,
+            'data' => [
+                [
+                    'id'     => 1,
+                    'text'   => 'Enim provident tempore reiciendis quit qui.',
+                    'active' => true
+                ],
+                [
+                    'id'     => 2,
+                    'text'   => 'Provident tempore enim reiciendis quitqui.',
+                    'active' => false
+                ]
+            ]
+        ];
 
-        $result = $this->response_handler->respond($mapper, $m_paginate)->getContent();
+        $result = $this->response_handler->respond($mapper, $m_paginate)->original;
 
-        assertEquals($result, $expected_response);
+        assertEquals($result, $expected);
     }
 
 
@@ -130,12 +178,18 @@ class ApiTest extends TestCase {
         $m_post_1->shouldReceive('getAttribute')->passthru();
 
         $mapper = new DummyMapper();
+        $expected = [
+            'status' => 200,
+            'data'   => [
+                'id'     => 1,
+                'text'   => 'Enim provident tempore reiciendis quit qui.',
+                'active' => true
+            ]
+        ];
 
-        $expected_response = "{\"status\":200,\"data\":{\"id\":1,\"text\":\"Enim provident tempore reiciendis quit qui.\",\"active\":true}}";
+        $result = $this->response_handler->respond($mapper, $m_post_1)->original;
 
-        $result = $this->response_handler->respond($mapper, $m_post_1)->getContent();
-
-        assertEquals($result, $expected_response);
+        $this->assertEquals($result, $expected);
     }
 
     /**
@@ -149,19 +203,9 @@ class ApiTest extends TestCase {
         $m_post_1->text = 'Enim provident tempore reiciendis quit qui.';
         $m_post_1->active = true;
         $m_post_1->shouldReceive('getAttribute')->passthru();
-
-        $expected_response = "{\"status\":200,\"data\":{\"id\":1,\"text\":\"Enim provident tempore reiciendis quit qui.\",\"active\":true}}";
-
         $result = $this->response_handler->respond($m_post_1, $m_post_1)->getContent();
-
-        assertEquals($result, $expected_response);
     }
-
-
-
 }
-
-
 
 class DummyMapper {
 

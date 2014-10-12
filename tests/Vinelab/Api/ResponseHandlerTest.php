@@ -28,18 +28,24 @@ class ResponseHandlerTest extends TestCase {
     {
 
        $data = [
-          'id' => 1,
-          'text' => 'Enim provident tempore reiciendis quit qui.',
+          'id'     => 1,
+          'text'   => 'Enim provident tempore reiciendis quit qui.',
           'active' => true
         ];
 
-        $expected_response = "{\"status\":200,\"data\":{\"id\":1,\"text\":\"Enim provident tempore reiciendis quit qui.\",\"active\":true}}";
+        $expected = [
+            'status' => 200,
+            'data'   => $data
+        ];
 
         $response_handler = new \Vinelab\Api\ResponseHandler($this->responder);
 
-        $result = $response_handler->respond($data)->getContent();
+        $result = $response_handler->respond($data)->original;
 
-        assertEquals($result, $expected_response);
+        $this->assertEquals($result, $expected);
+        $this->assertInternalType('int', $result['status']);
+        $this->assertInternalType('int', $result['data']['id']);
+        $this->assertInternalType('boolean', $result['data']['active']);
     }
 
 }

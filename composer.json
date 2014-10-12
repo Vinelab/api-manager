@@ -1,11 +1,15 @@
 {
     "name": "vinelab/api-manager",
-    "description": "Laravel API Manager Package",
-    "keywords": ["api", "laravel", "package"],
+    "description": "Laravel API Manager Package - beatify and unify your responses with the least effort possible.",
+    "keywords": ["api", "laravel", "package", "response"],
     "authors": [
         {
             "name": "Mahmoud Zalt",
             "email": "mahmoud@vinelab.com"
+        },
+        {
+            "name": "Abed Halawi",
+            "email": "abed.halawi@vinelab.com"
         }
     ],
     "require": {

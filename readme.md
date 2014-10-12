@@ -1,6 +1,6 @@
 # API Manager
 
-API response formatter and handler for Laravel.
+A simple API response formatter and handler for Laravel. Beautify and unify your responses with the least effort possible.
 
 ## Install
 

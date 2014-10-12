@@ -1,11 +1,10 @@
-API Manager
-======
->API Manager Package for Laravel 4
+# API Manager
 
+API response formatter and handler for Laravel.
 
 ## Install
 
-######Via composer:
+### Via composer:
 ```php
 {
      "require": {
@@ -13,8 +12,8 @@ API Manager
      }
  }
 ```
- 
-Add the service provider to `app/config/app.php`:
+
+Add the service provider to the `providers` array in `app/config/app.php`:
 
 ```php
 'providers' => array(
@@ -27,35 +26,68 @@ Add the service provider to `app/config/app.php`:
 ## Configuration
 
 Publish the package config file:
-```dos
+```bash
 php artisan config:publish vinelab/api-manager
 ```
-Open it the config file at:
-`app/config/packages/vinelab/api/api.php`
 
-You need to set the mappers base namespace
+It is now located at `app/config/packages/vinelab/api-manager/api.php`
+
+You need to set the mappers base namespace (See [Mappers Terminology](#mappers) for more on mappers)
 
 ```php
 'mappers' => 'Lib\Api\Mappers\\',
 ```
 
-
 ## Setup
 This package expects to have **Mapper class** for each model you want to return via the API.
-#####Terminology:
->A Mapper is a class that will takes raw data and returns it as presentable array ready for formatting.
 
-The class name should follow this convention `modelnameMapper` example (PostsMapper).
-Each mapper class must  have an implementation of a `map()` function, thus you should use the API `MappableTrait` trait. 
->*(traits in php acts similarly to interfaces, with the ability to override the function signature)*.
+### Mappers
+A Mapper is a class that transforms any supported data type *(i.e. Model)* into a suitable array for an API response
+with the attributes of your choise. *Example:*
 
+#### Mapper Class
+```php
+// this will force the existence of a map($data) function which is required by this package.
+use Vinelab\Api\MappableTrait;
 
-here's an example of a mapper called `PostsMapper.php`
+class PostMapper {
+    use MappableTrait;
+
+    public function map(Post $post)
+    {
+        return [
+            'id'        => (int) $post->id,
+            'title'     => $post->title,
+            'body'      => $post->body,
+            'published' => (boolean) $post->published
+        ];
+    }
+}
+```
+
+#### Mapper Usage
+```php
+$post = Post::create([
+    'title'     => 'Some Title',
+    'body'      => 'Things and spaces',
+    'published' => true
+]);
+
+$mapper = new PostMapper;
+return $mapper->map($post);
+```
+
+Each mapper class must  have an implementation of a `map()` function, thus you should use the API `MappableTrait` trait.
+>*traits in php acts similarly to interfaces, with the ability to override the function signature*.
+
+here's an example of a mapper called `PostsMapper`
 
 Note: you can override the argument data type of the `map()` function, to accept an `array` or an object of the `model`, or anything else you prefer.
 
-###Mapper example
-####Array input 
+### Mapper Examples
+
+#### Array Mapping
+
 ```php
 <?php namespace Lib\Api\Mappers;
 
@@ -77,18 +109,8 @@ class PostsMapper implements PostsInterface {
 
 }
 ```
-#####It's interface (PostsInterface)
 
-```php
-<?php namespace Lib\Api\Mappers;
-
-interface PostsInterface
-{
-    public function map(array $data);
-}
-```
-
-####Model input 
+#### Model Mapping
 ```php
 <?php namespace Lib\Api\Mappers;
 
@@ -111,33 +133,27 @@ class PostsMapper implements PostsInterface {
 }
 ```
 
-#####It's interface (PostsInterface)
-
-```php
-<?php namespace Lib\Api\Mappers;
-
-interface PostsInterface
-{
-    public function map(Post $data);
-}
-```
-
-
 ## Usage and Responses
+
 From your controller you can use the `Api` Facade Class that contains these 2 important functions `respond` and `error`.
 
-The `Api::respond` takes different types of parameters, it can be instance of `Illuminate\Pagination\Paginator` or a  `model` object or a `Illuminate\Database\Eloquent\Collection` of model objects or an `array`.
+The `Api::respond` accepts different types of parameters, it can be an instance of `Illuminate\Pagination\Paginator`,
+Eloquent Model, `Illuminate\Database\Eloquent\Collection` of model objects or an `array`.
 
-The responses returned by this package follows the conventions of a [json api](http://jsonapi.org/format/) and the standards of [Build APIs You Won't Hate](https://leanpub.com/build-apis-you-wont-hate).
+> The responses returned by this package follows the conventions of a [json api](http://jsonapi.org/format/) and the
+standards recommended by the book [Build APIs You Won't Hate](https://leanpub.com/build-apis-you-wont-hate).
+
+```php
+Api::respond($data, $total = null, $page = null, $status = 200, $headers = [], $options = 0)
+```
+> When `$total` and `$page` are `null` they won't be included in the response.
 
 ### Pagination
 ```php
-$data = Post::paginate(3);
-
-return Api::respond('PostsMapper', $data);
-// or: Api::respond('PostsMapper', $data, 200);
+return Api::respond('PostsMapper', Post::paginate(3));
 ```
-####Response sample
+
+#### Response
 
 ```json
 {
@@ -167,14 +183,12 @@ return Api::respond('PostsMapper', $data);
 }
 ```
 
-###Model
+### Model
 ```php
-$data = Post::first();
-
-return Api::respond('PostsMapper', $data);
+return Api::respond('PostsMapper',Post::first());
 ```
 
-####Response sample
+#### Response
 ```json
 {
     "status": 200,
@@ -187,16 +201,16 @@ return Api::respond('PostsMapper', $data);
 }
 ```
 
-###Collection:
+### Collection
 ```php
 $data = Post::where('active', '0')->get();
 $total = $data->count();
-$page = 2; // Input::get('page') ...
+$page = 2;
 
 return Api::respond('PostsMapper', $data, $total, $page);
 ```
 
-####Response sample:
+#### Response
 ```json
 {
     "status": 200,
@@ -215,7 +229,6 @@ return Api::respond('PostsMapper', $data, $total, $page);
             "text": "Ea et quae facere fugiat non est eveniet. Veniam quas doloremque repellat esse nihil qui qui voluptas. Laboriosam voluptate rerum et perferendis adipisci deleniti. Quae quam nisi facilis quia dolore.",
             "active": false
         },
-			............
         {
             "id": 14,
             "title": "Illo quia minima ut est praesentium assumenda explicabo. Facilis ipsam minus et rerum perspiciatis illo. Voluptas distinctio et possimus non iste doloremque dolor.",
@@ -232,42 +245,48 @@ return Api::respond('PostsMapper', $data, $total, $page);
 }
 ```
 
+## Error Handling
+For an error response use the `Api::error` function.
 
-##Error Handling:
-For error response use the `Api::error` function.
-`Api::error` takes an `Exception` class or a `custom class` that extends from `Exception` or a `string` of the error message. 
-
-###Exception example
 ```php
+Api::error($exception, $code = 0, $status = 500, $headers = [], $options = 0);
+```
+
+> `$exception` can be either a **string** (the exception message) or an inheritance of either `Exception` or `RuntimeException`
+
+### Erorr with Exception
+```php
+try {
+    throw WhateverCustomException('You deserve it, this is your fault.', 1001);
 } catch (WhateverCustomException $e)
 {
-	return Api::error($e);
+	return Api::error($e, $e->getCode(), 401);
 }
 ```
 
-####Response sample:
+#### Response
 ```json
 {
-    "status": 500,
+    "status": 401,
     "error": {
-        "message": "Hey you did something wrong...",
-        "code": 0
+        "code": 1001,
+        "message": "You deserve it, this is your fault."
     }
 }
 ```
 
-###Message example
+### Error with Message
 ```php
 return Api::error('Something is wrong!!!', 1000, 505);
 ```
 
-####Response sample:
+#### Response
 ```json
 {
     "status": 505,
     "error": {
-        "message": "Something is wrong!!!",
-        "code": 1000
+        "code": 1000,
+        "message": "Something is wrong!!!"
     }
 }
 ```

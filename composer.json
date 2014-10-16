@@ -2,6 +2,7 @@
     "name": "vinelab/api-manager",
     "description": "Laravel API Manager Package - beatify and unify your responses with the least effort possible.",
     "keywords": ["api", "laravel", "package", "response"],
+    "license": "MIT",
     "authors": [
         {
             "name": "Mahmoud Zalt",

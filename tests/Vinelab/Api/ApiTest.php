@@ -52,10 +52,13 @@ class ApiTest extends TestCase {
 
         $data = new Collection([$m_post_1, $m_post_2]);
 
-        $result = $this->response_handler->respond($mapper, $data)->original;
+        $result = $this->response_handler->respond($mapper, $data, 100, 1, 5)->original;
 
         $expected = [
             'status' => 200,
+            'total' => 100,
+            'page' => 1,
+            'per_page' => 5,
             'data'   => [
                 [
                     'id'     => 1,
@@ -95,12 +98,13 @@ class ApiTest extends TestCase {
 
         $data = new Collection([$m_post_1, $m_post_2]);
 
-        $result = $this->response_handler->respond($mapper, $data, 100, 1)->original;
+        $result = $this->response_handler->respond($mapper, $data, 100, 1, 5)->original;
 
         $expected = [
             'status' => 200,
             'total' => 100,
             'page' => 1,
+            'per_page' => 5,
             'data' => [
                 [
                     'id'     => 1,
@@ -140,6 +144,7 @@ class ApiTest extends TestCase {
         $m_paginate = M::mock('Illuminate\Pagination\Paginator');
         $m_paginate->shouldReceive('getTotal')->once()->andReturn(300);
         $m_paginate->shouldReceive('getCurrentPage')->once()->andReturn(1);
+        $m_paginate->shouldReceive('getPerPage')->once()->andReturn(25);
         $m_paginate->shouldReceive('all')->andReturn($data);
 
         $mapper = new DummyMapper();
@@ -148,6 +153,7 @@ class ApiTest extends TestCase {
             'status' => 200,
             'total' =>  300,
             'page' => 1,
+            'per_page' => 25,
             'data' => [
                 [
                     'id'     => 1,

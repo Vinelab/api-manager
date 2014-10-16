@@ -82,14 +82,15 @@ class Api {
         {
             $arguments[0] = $data->getTotal();
             $arguments[1] = $data->getCurrentPage();
+            $arguments[2] = $data->getPerPage();
         }
 
         // skip the first 2 arguments and save the rest to the 'arguments array':
         // > in case data is instance of Paginator then this will append all the arguments to the 'arguments array'
         // starting by the third arguments which should be the 'status'.
-        // > in case data is is not instance of Paginator (means total and page are added manually as arguments)
-        // then this will add all the arguments to the 'arguments array' starting by the third arguments which
-        // should be the 'page'.
+        // > in case data is is not instance of Paginator (means total and page and per_page are added manually as
+        // arguments) then this will add all the arguments to the 'arguments array' starting by the third arguments
+        // which should be the 'page'.
         foreach (array_slice(func_get_args(), 2) as $arg) { $arguments[count($arguments)] = $arg; }
 
         // In the case of a Collection or Paginator all we need is the data as a

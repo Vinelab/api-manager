@@ -41,7 +41,7 @@ class Api {
         $this->config_reader    = $config_reader;
 
         // reading the config file and storing it in the 'configurations' variable
-        $this->configurations         = $this->config_reader->get('api::api');
+        $this->configurations         = $this->config_reader->get('api-manager::api');
 
         // assigning the 'mappers_base_namespace' to its value from the config file
         $this->mappers_base_namespace = $this->configurations['mappers'];

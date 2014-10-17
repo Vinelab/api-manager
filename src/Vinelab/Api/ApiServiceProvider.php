@@ -20,7 +20,7 @@ class ApiServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('vinelab/api');
+		$this->package('vinelab/api-manager');
 	}
 
 	/**
@@ -35,10 +35,7 @@ class ApiServiceProvider extends ServiceProvider {
         // For Bindings:
         //--------------
 
-
-
-
-
+        // ...
 
 
         // For Facade:
@@ -57,12 +54,6 @@ class ApiServiceProvider extends ServiceProvider {
                 $loader = \Illuminate\Foundation\AliasLoader::getInstance();
                 $loader->alias('Api', 'Vinelab\Api\ApiFacadeAccessor');
             });
-
-
-        // For config files:
-        //------------------
-        // registering the package (for the config files)
-        $this->package("vinelab/api");
 
 	}
 

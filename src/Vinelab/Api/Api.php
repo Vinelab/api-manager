@@ -22,11 +22,6 @@ class Api {
     private $mappers_base_namespace;
 
     /**
-     * @var
-     */
-    protected $api;
-
-    /**
      * @var mixed
      */
     protected $configurations;
@@ -50,31 +45,15 @@ class Api {
     /**
      * Map and respond
      *
-     * @param $mapper
-     * @param $data
+     * @param string|mixed $mapper
+     * @param mixed $data
      *
      * @throws ApiException
-     * @internal param \the $model model name
-     * @internal param int $status
-     * @internal param null $total
-     * @internal param null $page
-     * @internal param array $headers
-     * @internal param int $options
-     * @internal param $mapper
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function respond($mapper, $data)
     {
-        // check whether $mapper is an actual mapper instance, otherwise
-        // resolve the mapper class name into a mapper instance.
-        if ( ! is_object($mapper)) $mapper = $this->resolveMapperClassName($mapper);
-
-        // check if the mapper uses the MappableTrait Trait.
-        if ( ! array_key_exists('Vinelab\Api\MappableTrait', class_uses($mapper)) )
-        {
-            throw new ApiException('MappableTrait Trait is not used in your Mapper: ' . get_class($mapper) );
-        }
-
         $arguments = [];
         // if data is instance of Paginator then get the values of the total and the page from the paginator,
         // and add them to the arguments array (total, page)
@@ -91,16 +70,41 @@ class Api {
         // > in case data is is not instance of Paginator (means total and page and per_page are added manually as
         // arguments) then this will add all the arguments to the 'arguments array' starting by the third arguments
         // which should be the 'page'.
-        foreach (array_slice(func_get_args(), 2) as $arg) { $arguments[count($arguments)] = $arg; }
+        foreach (array_slice(func_get_args(), 2) as $arg) {
+            $arguments[count($arguments)] = $arg;
+        }
+
+        $result[] = $this->data($mapper, $data);
+
+        return call_user_func_array([$this->response_handler, 'respond'], array_merge($result, $arguments));
+    }
+
+    /**
+     * Get the formatted data out of the given mapper and data.
+     *
+     * @param  string|mixed $mapper
+     * @param  mixed $data
+     *
+     * @return array
+     */
+    public function data($mapper, $data)
+    {
+        // check whether $mapper is an actual mapper instance, otherwise
+        // resolve the mapper class name into a mapper instance.
+        if ( ! is_object($mapper)) $mapper = $this->resolveMapperClassName($mapper);
+
+        // check if the mapper uses the MappableTrait Trait.
+        if ( ! array_key_exists('Vinelab\Api\MappableTrait', class_uses($mapper)) )
+        {
+            throw new ApiException('MappableTrait Trait is not used in your Mapper: ' . get_class($mapper) );
+        }
 
         // In the case of a Collection or Paginator all we need is the data as a
         // Traversable so that we iterate and map each item.
         if ($data instanceof Collection or $data instanceof Paginator) $data = $data->all();
 
         // call the map function of the mapper for each data in the $data array
-        $result[] = (is_array($data)) ? array_map([$mapper, 'map'], $data) : $mapper->map($data);
-
-        return call_user_func_array([$this->response_handler, 'respond'], array_merge($result, $arguments));
+        return (is_array($data)) ? array_map([$mapper, 'map'], $data) : $mapper->map($data);
     }
 
     /**

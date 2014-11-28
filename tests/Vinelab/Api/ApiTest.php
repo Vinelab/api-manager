@@ -211,6 +211,31 @@ class ApiTest extends TestCase {
         $m_post_1->shouldReceive('getAttribute')->passthru();
         $result = $this->response_handler->respond($m_post_1, $m_post_1)->getContent();
     }
+
+    public function testGettingContentOnly()
+    {
+        $mPost = M::mock('Post');
+        $mPost->shouldReceive('setAttribute')->passthru();
+        $mPost->id = 1;
+        $mPost->text = 'Enim provident tempore reiciendis quit qui.';
+        $mPost->active = true;
+        $mPost->shouldReceive('getAttribute')->passthru();
+
+        $mapper = new DummyMapper();
+
+        $expected = [
+            'status' => 200,
+            'data'   => [
+                'id'     => 1,
+                'text'   => 'Enim provident tempore reiciendis quit qui.',
+                'active' => true
+            ]
+        ];
+
+        $result = $this->response_handler->content($mapper, $mPost);
+        $this->assertInternalType('array', $result);
+        $this->assertEquals($expected, $result);
+    }
 }
 
 class DummyMapper {

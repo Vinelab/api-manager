@@ -108,6 +108,21 @@ class Api {
     }
 
     /**
+     * Get the content only from the response.
+     *
+     * @param  mixed $mapper
+     * @param  mixed $data
+     *
+     * @return array
+     */
+    public function content($mapper, $data)
+    {
+        $response = call_user_func_array([$this, 'respond'], func_get_args());
+
+        return $response->getOriginalContent();
+    }
+
+    /**
      * An error occurred, respond accordingly.
      *
      * @return Illuminate\Http\JsonResponse

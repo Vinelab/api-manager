@@ -1,7 +1,9 @@
 <?php namespace Vinelab\Api;
+
 /**
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
  */
+
 use Illuminate\Support\ServiceProvider;
 
 class ApiServiceProvider extends ServiceProvider {

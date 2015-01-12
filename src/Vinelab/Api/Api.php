@@ -12,6 +12,7 @@ use Illuminate\Config\Repository;
 use Vinelab\Api\ErrorHandler;
 use Vinelab\Api\ResponseHandler;
 use Vinelab\Api\ApiException;
+use \Input;
 
 /**
  * Class Api
@@ -19,13 +20,22 @@ use Vinelab\Api\ApiException;
  */
 class Api {
 
-    private $mappers_base_namespace;
+    /**
+     * @var int
+     */
+    protected $configured_limit;
 
     /**
-     * @var mixed
+     * @var
      */
-    protected $configurations;
+    private $mappers_base_namespace;
 
+
+    /**
+     * @param \Vinelab\Api\ResponseHandler  $response_handler
+     * @param \Vinelab\Api\ErrorHandler     $error_handler
+     * @param \Illuminate\Config\Repository $config_reader
+     */
     public function __construct(
         ResponseHandler         $response_handler,
         ErrorHandler            $error_handler,
@@ -35,11 +45,21 @@ class Api {
         $this->error            = $error_handler;
         $this->config_reader    = $config_reader;
 
-        // reading the config file and storing it in the 'configurations' variable
-        $this->configurations         = $this->config_reader->get('api-manager::api');
+        // get config file values and store them in attributes
+        $this->readConfigFile();
+    }
 
-        // assigning the 'mappers_base_namespace' to its value from the config file
-        $this->mappers_base_namespace = $this->configurations['mappers'];
+    /**
+     * get config file values and store them in attributes
+     */
+    private function readConfigFile()
+    {
+        // reading the config file to be stored in the 'configurations' variable below
+        $configurations = $this->config_reader->get('api-manager::api');
+
+        $this->mappers_base_namespace = $configurations['mappers'];
+
+        $this->configured_limit = $configurations['limit'];
     }
 
     /**
@@ -141,7 +161,65 @@ class Api {
      */
     private function resolveMapperClassName($classname)
     {
-        return App::make($this->mappers_base_namespace . $classname);
+        return App::make($this->getMapperNamespace() . $classname);
     }
 
+    /**
+     * get the value of mappers_base_namespace from the config file
+     *
+     * @return string
+     */
+    public function getMapperNamespace()
+    {
+        return $this->mappers_base_namespace;
+    }
+
+    /**
+     * get the limit value from the config file which represents the default and the maximum limit
+     * 
+     * @return int
+     */
+    public function getMaximumLimit()
+    {
+        // get the default limit value of results per request from the config file
+        return (int) $this->configured_limit;
+    }
+
+    /**
+     * validate the requested limit doesn't exceed the default predefined limit from the config file
+     * the user is allowed to override the default limit (form the config file) if and only if it is
+     * less then the default limit.
+     *
+     * @param $limit
+     *
+     * @return int
+     */
+    private function validateRequestedLimitValue($request_limit)
+    {
+        // get limit from config file
+        $limit = $this->getMaximumLimit();
+
+        // check if limit value exceed the allowed predefined default limit value
+        return ($request_limit <= $limit) ? (int) $request_limit : (int) $limit;
+    }
+
+
+    /**
+     * this function will be accessed as facade from anywhere to get the limit number of data for the endpoint call
+     *
+     * @return int
+     */
+    public function limit()
+    {
+        // get limit from config file
+        $limit = $this->getMaximumLimit();
+
+        // get the limit from the request if available else get the the default predefined limit from the config file
+        if(Input::get('limit') && is_numeric(Input::get('limit'))){
+            $limit = Input::get('limit');
+        }
+        
+        // validate the limit does not exceed the allowed value
+        return $this->validateRequestedLimitValue($limit);
+    }
 }

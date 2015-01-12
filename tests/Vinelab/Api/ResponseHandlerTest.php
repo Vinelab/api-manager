@@ -1,5 +1,9 @@
 <?php namespace Vinelab\Api\Tests;
 
+/**
+ * @author Mahmoud Zalt <mahmoud@vinelab.com>
+ */
+
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Collection;
 use Vinelab\Api\Responder;

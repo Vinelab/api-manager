@@ -1,5 +1,9 @@
 <?php namespace Vinelab\Api;
 
+/**
+ * @author Mahmoud Zalt <mahmoud@vinelab.com>
+ */
+
 use Illuminate\Support\Facades\Facade;
 
 class ApiFacadeAccessor extends Facade

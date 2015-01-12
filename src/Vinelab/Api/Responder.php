@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 
 class Responder {
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     */
     public function __construct(Request $request)
     {
         $this->request = $request;
@@ -20,7 +23,7 @@ class Responder {
      * @param $headers
      * @param $options
      *
-     * @return \Illuminate\Http\JsonResponse|string
+     * @return $this|\Illuminate\Http\JsonResponse
      */
     public function respond($response, $status, $headers, $options)
     {

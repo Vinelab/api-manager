@@ -1,5 +1,9 @@
 <?php namespace Vinelab\Api\Tests;
 
+/**
+ * @author Mahmoud Zalt <mahmoud@vinelab.com>
+ */
+
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Mockery as M;

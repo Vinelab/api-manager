@@ -15,6 +15,9 @@ class ResponseHandler {
      */
     protected $responder;
 
+    /**
+     * @param \Vinelab\Api\Responder $responder
+     */
     public function __construct(Responder $responder)
     {
         $this->responder = $responder;

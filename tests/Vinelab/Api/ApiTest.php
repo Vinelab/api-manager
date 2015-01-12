@@ -1,5 +1,9 @@
 <?php namespace Vinelab\Api\Tests;
 
+/**
+ * @author Mahmoud Zalt <mahmoud@vinelab.com>
+ */
+
 use Illuminate\Support\Collection;
 use Mockery as M;
 use Vinelab\Api\ErrorHandler;
@@ -21,7 +25,7 @@ class ApiTest extends TestCase {
 
         $this->config_reader = M::mock('Illuminate\Config\Repository');
         $this->config_reader->shouldReceive('get')->with('api-manager::api')
-            ->andReturn(['mappers' => 'Lib\Api\Mappers\\']);
+            ->andReturn(['mappers' => 'Lib\Api\Mappers\\', 'limit' => '50']);
 
         $this->response_handler = new Api($this->response_handler, $this->error_handler, $this->config_reader);
     }

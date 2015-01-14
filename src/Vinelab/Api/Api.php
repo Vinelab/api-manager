@@ -5,12 +5,12 @@
  * @author Abed Halawi <halawi.abed@gmail.com>
  */
 
-use Illuminate\Support\Collection;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Collection;
 use Illuminate\Config\Repository;
-use Vinelab\Api\ErrorHandler;
 use Vinelab\Api\ResponseHandler;
+use Vinelab\Api\ErrorHandler;
 use Vinelab\Api\ApiException;
 use \Input;
 
@@ -23,12 +23,27 @@ class Api {
     /**
      * @var int
      */
-    protected $configured_limit;
+    protected $limit;
 
     /**
-     * @var
+     * @var string
      */
     private $mappers_base_namespace;
+
+    /**
+     * @var \Vinelab\Api\ResponseHandler
+     */
+    private $response_handler;
+
+    /**
+     * @var \Vinelab\Api\ErrorHandler
+     */
+    private $error;
+
+    /**
+     * @var \Illuminate\Config\Repository
+     */
+    private $config_reader;
 
 
     /**
@@ -59,7 +74,7 @@ class Api {
 
         $this->mappers_base_namespace = $configurations['mappers'];
 
-        $this->configured_limit = $configurations['limit'];
+        $this->limit = $configurations['limit'];
     }
 
     /**
@@ -182,7 +197,7 @@ class Api {
     public function getMaximumLimit()
     {
         // get the default limit value of results per request from the config file
-        return (int) $this->configured_limit;
+        return (int) $this->limit;
     }
 
     /**
@@ -218,8 +233,19 @@ class Api {
         if(Input::get('limit') && is_numeric(Input::get('limit'))){
             $limit = Input::get('limit');
         }
-        
+
         // validate the limit does not exceed the allowed value
         return $this->validateRequestedLimitValue($limit);
     }
+
+    /**
+     * override the limit of the config file
+     *
+     * @param $limit
+     */
+    public function setLimit($limit)
+    {
+        $this->limit = (int) $limit;
+    }
+    
 }

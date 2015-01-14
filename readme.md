@@ -1,3 +1,8 @@
+
+[![Latest Stable Version](https://poser.pugx.org/vinelab/api-manager/v/stable.svg)](https://packagist.org/packages/vinelab/api-manager) 
+[![Total Downloads](https://poser.pugx.org/vinelab/api-manager/downloads.svg)](https://packagist.org/packages/vinelab/api-manager) 
+[![Latest Unstable Version](https://poser.pugx.org/vinelab/api-manager/v/unstable.svg)](https://packagist.org/packages/vinelab/api-manager) 
+[![License](https://poser.pugx.org/vinelab/api-manager/license.svg)](https://packagist.org/packages/vinelab/api-manager)
 [![Build Status](https://travis-ci.org/Vinelab/api-manager.svg)](https://travis-ci.org/Vinelab/api-manager)
 
 # API Manager
@@ -34,10 +39,15 @@ php artisan config:publish vinelab/api-manager
 
 It is now located at `app/config/packages/vinelab/api-manager/api.php`
 
-You need to set the mappers base namespace (See [Mappers Terminology](#mappers) for more on mappers)
+The mappers is where you specify your mappers base namespace (See [Mappers Terminology](#mappers) for more on mappers)
 
 ```php
 'mappers' => 'Lib\Api\Mappers\\',
+```
+The limit is where you set the maximum number of data to be returned with any endpoint request.
+
+```php
+'limit' => '50',
 ```
 
 ## Setup
@@ -247,6 +257,11 @@ return Api::respond('PostsMapper', $data, $total, $page);
 }
 ```
 
+### Data Limit
+User can specify a limit `/?limit=20` for every request, to get the requested limit use `Api::limit()`, this will automatically check if the requested limit doesn't exceed your  maximum specified limit value. 
+
+To override the limit value *(configured limit)* within your code you can use `Api::setLimit(100)`.
+
 ## Error Handling
 For an error response use the `Api::error` function.
 
@@ -292,3 +307,10 @@ return Api::error('Something is wrong!!!', 1000, 505);
     }
 }
 ```
+## Contributing
+
+Please see [CONTRIBUTING](https://github.com/Vinelab/api-manager/blob/master/CONTRIBUTING.md) for details.
+
+## License
+The package is open-sourced software licensed under the  [MIT license](https://github.com/Vinelab/api-manager/blob/master/LICENSE).
+

@@ -12,7 +12,7 @@ use Illuminate\Config\Repository;
 use Vinelab\Api\ResponseHandler;
 use Vinelab\Api\ErrorHandler;
 use Vinelab\Api\ApiException;
-use \Input;
+use Input;
 
 /**
  * Class Api
@@ -191,7 +191,7 @@ class Api {
 
     /**
      * get the limit value from the config file which represents the default and the maximum limit
-     * 
+     *
      * @return int
      */
     public function getMaximumLimit()
@@ -247,5 +247,5 @@ class Api {
     {
         $this->limit = (int) $limit;
     }
-    
+
 }

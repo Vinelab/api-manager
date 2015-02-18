@@ -11,6 +11,7 @@ use Vinelab\Api\Responder;
 use Vinelab\Api\Api;
 use Illuminate\Http\Request;
 use Vinelab\Api\ResponseHandler;
+use Illuminate\Support\Facades\App;
 
 class ApiTest extends TestCase {
 
@@ -202,20 +203,6 @@ class ApiTest extends TestCase {
         $this->assertEquals($result, $expected);
     }
 
-    /**
-     * @expectedException        Vinelab\Api\ApiException
-     */
-    public function testRespondThrowsException()
-    {
-        $m_post_1 = M::mock('Post');
-        $m_post_1->shouldReceive('setAttribute')->passthru();
-        $m_post_1->id = 1;
-        $m_post_1->text = 'Enim provident tempore reiciendis quit qui.';
-        $m_post_1->active = true;
-        $m_post_1->shouldReceive('getAttribute')->passthru();
-        $result = $this->response_handler->respond($m_post_1, $m_post_1)->getContent();
-    }
-
     public function testGettingContentOnly()
     {
         $mPost = M::mock('Post');
@@ -240,6 +227,66 @@ class ApiTest extends TestCase {
         $this->assertInternalType('array', $result);
         $this->assertEquals($expected, $result);
     }
+
+    public function testCallingMapperAsArrayWithStringName()
+    {
+        $mPost = M::mock('Post');
+        $mPost->shouldReceive('setAttribute')->passthru();
+        $mPost->id = 1;
+        $mPost->text = 'Enim provident tempore reiciendis quit qui.';
+        $mPost->active = true;
+        $mPost->shouldReceive('getAttribute')->passthru();
+
+
+        $expected = [
+            'status' => 200,
+            'data'   => [
+                'id'     => 1,
+                'text'   => 'Enim provident tempore reiciendis quit qui.',
+                'active' => true
+            ]
+        ];
+
+        $this->response_handler->setMapperNamespace('Vinelab\Api\Tests\\');
+        $mapper = ['DummyMapper', 'mapDatThing'];
+
+        $mMapper = M::mock('Vinelab\Api\Tests\DummyMapper');
+        $mMapper->shouldReceive('mapDatThing')->once()->with($mPost)->andReturn($expected['data']);
+
+        App::shouldReceive('make')->once()->with('Vinelab\Api\Tests\DummyMapper')
+            ->andReturn($mMapper);
+
+        $result = $this->response_handler->content($mapper, $mPost);
+        $this->assertInternalType('array', $result);
+        $this->assertEquals($expected, $result);
+    }
+
+    public function testCallingMapperAsArrayWithInstance()
+    {
+        $mPost = M::mock('Post');
+        $mPost->shouldReceive('setAttribute')->passthru();
+        $mPost->id = 1;
+        $mPost->text = 'Enim provident tempore reiciendis quit qui.';
+        $mPost->active = true;
+        $mPost->shouldReceive('getAttribute')->passthru();
+
+
+        $expected = [
+            'status' => 200,
+            'data'   => [
+                'id'     => 1,
+                'text'   => 'Enim provident tempore reiciendis quit qui.',
+                'active' => true
+            ]
+        ];
+
+        $this->response_handler->setMapperNamespace('Vinelab\Api\Tests\\');
+        $mapper = [new DummyMapper(), 'mapDatThing'];
+
+        $result = $this->response_handler->content($mapper, $mPost);
+        $this->assertInternalType('array', $result);
+        $this->assertEquals($expected, $result);
+    }
 }
 
 class DummyMapper {
@@ -253,5 +300,10 @@ class DummyMapper {
             'text'   => $data->text,
             'active' => (boolean) $data->active
         ];
+    }
+
+    public function mapDatThing($data)
+    {
+        return $this->map($data);
     }
 }

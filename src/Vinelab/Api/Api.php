@@ -124,22 +124,28 @@ class Api {
      */
     public function data($mapper, $data)
     {
+        $method = 'map';
+
+        // First we check whether we've been passed an array in which case we consider the array to be ['mapper', 'method']
+        // where 'mapper' can either be the mapper class name as a string or the actual instance.
+        if (is_array($mapper) and count($mapper) == 2)
+        {
+            $instance = $mapper[0];
+            $method = $mapper[1];
+
+            $mapper = $instance;
+        }
+
         // check whether $mapper is an actual mapper instance, otherwise
         // resolve the mapper class name into a mapper instance.
         if ( ! is_object($mapper)) $mapper = $this->resolveMapperClassName($mapper);
-
-        // check if the mapper uses the MappableTrait Trait.
-        if ( ! array_key_exists('Vinelab\Api\MappableTrait', class_uses($mapper)) )
-        {
-            throw new ApiException('MappableTrait Trait is not used in your Mapper: ' . get_class($mapper) );
-        }
 
         // In the case of a Collection or Paginator all we need is the data as a
         // Traversable so that we iterate and map each item.
         if ($data instanceof Collection or $data instanceof Paginator) $data = $data->all();
 
         // call the map function of the mapper for each data in the $data array
-        return (is_array($data)) ? array_map([$mapper, 'map'], $data) : $mapper->map($data);
+        return (is_array($data)) ? array_map([$mapper, $method], $data) : $mapper->$method($data);
     }
 
     /**
@@ -246,6 +252,18 @@ class Api {
     public function setLimit($limit)
     {
         $this->limit = (int) $limit;
+    }
+
+    /**
+     * Set the base namespace from which to resolve mappers.
+     *
+     * @param string $namespace
+     *
+     * @return void
+     */
+    public function setMapperNamespace($namespace)
+    {
+        $this->mappers_base_namespace = $namespace;
     }
 
 }

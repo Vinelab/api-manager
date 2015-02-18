@@ -64,7 +64,7 @@ A Mapper is a class that transforms any supported data type *(i.e. Model)* into 
 with the attributes of your choice.
 
 By default the *Api Manager* will call the method `map` on the given mapper
-unless indicated differently by passing `[$mapper, $method]`
+unless indicated differently by passing `[$mapper, $method]` where `$mapper` is either the actual instance of the class name as a string.
 
 *Example:*
 

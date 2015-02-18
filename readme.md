@@ -1,7 +1,7 @@
 
-[![Latest Stable Version](https://poser.pugx.org/vinelab/api-manager/v/stable.svg)](https://packagist.org/packages/vinelab/api-manager) 
-[![Total Downloads](https://poser.pugx.org/vinelab/api-manager/downloads.svg)](https://packagist.org/packages/vinelab/api-manager) 
-[![Latest Unstable Version](https://poser.pugx.org/vinelab/api-manager/v/unstable.svg)](https://packagist.org/packages/vinelab/api-manager) 
+[![Latest Stable Version](https://poser.pugx.org/vinelab/api-manager/v/stable.svg)](https://packagist.org/packages/vinelab/api-manager)
+[![Total Downloads](https://poser.pugx.org/vinelab/api-manager/downloads.svg)](https://packagist.org/packages/vinelab/api-manager)
+[![Latest Unstable Version](https://poser.pugx.org/vinelab/api-manager/v/unstable.svg)](https://packagist.org/packages/vinelab/api-manager)
 [![License](https://poser.pugx.org/vinelab/api-manager/license.svg)](https://packagist.org/packages/vinelab/api-manager)
 [![Build Status](https://travis-ci.org/Vinelab/api-manager.svg)](https://travis-ci.org/Vinelab/api-manager)
 
@@ -39,31 +39,38 @@ php artisan config:publish vinelab/api-manager
 
 It is now located at `app/config/packages/vinelab/api-manager/api.php`
 
+#### Namespace
 The mappers is where you specify your mappers base namespace (See [Mappers Terminology](#mappers) for more on mappers)
 
 ```php
 'mappers' => 'Lib\Api\Mappers\\',
 ```
+
+You may use `Api::setMapperNamespace('\New\Namespace\\');` to override the configured namespace.
+
+#### Limit
 The limit is where you set the maximum number of data to be returned with any endpoint request.
 
 ```php
 'limit' => '50',
 ```
 
+
 ## Setup
 This package expects to have **Mapper class** for each model you want to return via the API.
 
 ### Mappers
 A Mapper is a class that transforms any supported data type *(i.e. Model)* into a suitable array for an API response
-with the attributes of your choise. *Example:*
+with the attributes of your choice.
+
+By default the *Api Manager* will call the method `map` on the given mapper
+unless indicated differently by passing `[$mapper, $method]`
+
+*Example:*
 
 #### Mapper Class
 ```php
-// this will force the existence of a map($data) function which is required by this package.
-use Vinelab\Api\MappableTrait;
-
 class PostMapper {
-    use MappableTrait;
 
     public function map(Post $post)
     {
@@ -89,25 +96,15 @@ $mapper = new PostMapper;
 return $mapper->map($post);
 ```
 
-Each mapper class must  have an implementation of a `map()` function, thus you should use the API `MappableTrait` trait.
->*traits in php acts similarly to interfaces, with the ability to override the function signature*.
-
-here's an example of a mapper called `PostsMapper`
-
-Note: you can override the argument data type of the `map()` function, to accept an `array` or an object of the `model`, or anything else you prefer.
-
 ### Mapper Examples
+Here are some examples implementing a mapper called `PostsMapper`
 
 #### Array Mapping
 
 ```php
 <?php namespace Lib\Api\Mappers;
 
-use Vinelab\Api\MappableTrait;
-
 class PostsMapper implements PostsInterface {
-
-    use MappableTrait;
 
     public function map(array $data)
     {
@@ -126,11 +123,7 @@ class PostsMapper implements PostsInterface {
 ```php
 <?php namespace Lib\Api\Mappers;
 
-use Vinelab\Api\MappableTrait;
-
 class PostsMapper implements PostsInterface {
-
-    use MappableTrait;
 
     public function map(Post $post)
     {
@@ -149,14 +142,18 @@ class PostsMapper implements PostsInterface {
 
 From your controller you can use the `Api` Facade Class that contains these 2 important functions `respond` and `error`.
 
-The `Api::respond` accepts different types of parameters, it can be an instance of `Illuminate\Pagination\Paginator`,
-Eloquent Model, `Illuminate\Database\Eloquent\Collection` of model objects or an `array`.
+#### Data Types
+The `Api::respond($mapper, $data)` accepts the following data types for `$data`
+- array
+- Eloquent Model
+- `Illuminate\Pagination\Paginator` which is the result of calling `paginate()`
+- `Illuminate\Database\Eloquent\Collection` of model objects which is when fetching multiple records, *i.e.* `get()`
 
 > The responses returned by this package follows the conventions of a [json api](http://jsonapi.org/format/) and the
 standards recommended by the book [Build APIs You Won't Hate](https://leanpub.com/build-apis-you-wont-hate).
 
 ```php
-Api::respond($data, $total = null, $page = null, $status = 200, $headers = [], $options = 0)
+Api::respond($mapper, $data, $total = null, $page = null, $status = 200, $headers = [], $options = 0)
 ```
 > When `$total` and `$page` are `null` they won't be included in the response.
 
@@ -165,7 +162,7 @@ Api::respond($data, $total = null, $page = null, $status = 200, $headers = [], $
 return Api::respond('PostsMapper', Post::paginate(3));
 ```
 
-#### Response
+##### Response
 
 ```json
 {
@@ -200,7 +197,7 @@ return Api::respond('PostsMapper', Post::paginate(3));
 return Api::respond('PostsMapper',Post::first());
 ```
 
-#### Response
+##### Response
 ```json
 {
     "status": 200,
@@ -222,7 +219,7 @@ $page = 2;
 return Api::respond('PostsMapper', $data, $total, $page);
 ```
 
-#### Response
+##### Response
 ```json
 {
     "status": 200,
@@ -257,8 +254,14 @@ return Api::respond('PostsMapper', $data, $total, $page);
 }
 ```
 
-### Data Limit
-User can specify a limit `/?limit=20` for every request, to get the requested limit use `Api::limit()`, this will automatically check if the requested limit doesn't exceed your  maximum specified limit value. 
+### Request Data Limit
+Part of the api is the limit you would like to enforce on the clients that request your API. To make it easier
+and more centralized you may use the `Api` to set and get the limit value, aso configure a ceiling (max) value
+which cannot be exceeded by the requesting client.
+
+The value is read from the `limit` query parameter. *i.e.* `http://api.com/?limit=20`
+
+To get the requested limit use `Api::limit()` which will automatically verify that the requested limit does not exceed your maximum specified limit value.
 
 To override the limit value *(configured limit)* within your code you can use `Api::setLimit(100)`.
 
@@ -281,7 +284,10 @@ try {
 }
 ```
 
-#### Response
+> - 401 will be the HTTP response code
+> - 1001 is the error code (specific to the API)
+
+##### Response
 ```json
 {
     "status": 401,
@@ -297,7 +303,7 @@ try {
 return Api::error('Something is wrong!!!', 1000, 505);
 ```
 
-#### Response
+##### Response
 ```json
 {
     "status": 505,

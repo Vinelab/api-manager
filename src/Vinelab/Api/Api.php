@@ -145,7 +145,7 @@ class Api {
         if ($data instanceof Collection or $data instanceof Paginator) $data = $data->all();
 
         // call the map function of the mapper for each data in the $data array
-        return (is_array($data)) ? array_map([$mapper, $method], $data) : $mapper->$method($data);
+        return (is_array($data) && ! $this->isAssocArray($data)) ? array_map([$mapper, $method], $data) : $mapper->$method($data);
     }
 
     /**
@@ -266,4 +266,15 @@ class Api {
         $this->mappers_base_namespace = $namespace;
     }
 
+    /**
+     * Check whether the given array is an associative array (key-value).
+     *
+     * @param  array  $array
+     *
+     * @return bool
+     */
+    public function isAssocArray($array)
+    {
+        return is_array($array) && array_keys($array) !== range(0, count($array) - 1);
+    }
 }

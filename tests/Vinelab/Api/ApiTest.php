@@ -287,6 +287,23 @@ class ApiTest extends TestCase {
         $this->assertInternalType('array', $result);
         $this->assertEquals($expected, $result);
     }
+
+    /**
+     * Regression for an issue that occurred when passing associative
+     * arrays as data, the data translator had considered it to be an array of multiple
+     * records (multiple key-value arrays or models) while it shouldn't.
+     */
+    public function testRespondingWithKeyValuArray()
+    {
+        $data = ['key' => 'value', 'another' => 'value'];
+
+        $expected = ['tinkered' => 'data'];
+
+        $mapper = M::mock('Vinelab\Api\DummyMapper');
+        $mapper->shouldReceive('mapArray')->once()->with($data)->andReturn($expected);
+
+        $this->assertEquals(['tinkered' => 'data'], $this->response_handler->data([$mapper, 'mapArray'], $data));
+    }
 }
 
 class DummyMapper {

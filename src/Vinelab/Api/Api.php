@@ -124,6 +124,12 @@ class Api {
      */
     public function data($mapper, $data)
     {
+        // we won't deal with empty data
+        if (empty($data))
+        {
+            return $data;
+        }
+
         $method = 'map';
 
         // First we check whether we've been passed an array in which case we consider the array to be ['mapper', 'method']

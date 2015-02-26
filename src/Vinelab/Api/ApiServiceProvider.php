@@ -2,6 +2,7 @@
 
 /**
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
+ * @author Abed Halawi <abed.halawi@vinelab.com>
  */
 
 use Illuminate\Support\ServiceProvider;
@@ -22,7 +23,7 @@ class ApiServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('vinelab/api-manager');
+
 	}
 
 	/**
@@ -33,24 +34,14 @@ class ApiServiceProvider extends ServiceProvider {
 	public function register()
 	{
 
-
-        // For Bindings:
-        //--------------
-
-        // ...
-
-
-        // For Facade:
-        //-------------
-
-        // Register 'ApiFacade' instance container to our ApiFacade object
+        // Register the 'Api' class using the container so that we can resolve it accordingly.
         $this->app['vinelab.api'] = $this->app->share(function()
             {
                 return $this->app->make('Vinelab\Api\Api');
             });
 
 
-        // Shortcut so developers don't need to add an Alias in app/config/app.php
+        // Shortcut so developers don't need to add an alias in app/config/app.php
         $this->app->booting(function()
             {
                 $loader = \Illuminate\Foundation\AliasLoader::getInstance();

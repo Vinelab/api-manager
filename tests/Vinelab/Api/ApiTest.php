@@ -2,6 +2,7 @@
 
 /**
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
+ * @author Abed Halawi <abed.halawi@vinelab.com>
  */
 
 use Illuminate\Support\Collection;
@@ -12,6 +13,7 @@ use Vinelab\Api\Api;
 use Illuminate\Http\Request;
 use Vinelab\Api\ResponseHandler;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Response;
 
 class ApiTest extends TestCase {
 
@@ -57,7 +59,6 @@ class ApiTest extends TestCase {
 
         $data = new Collection([$m_post_1, $m_post_2]);
 
-        $result = $this->response_handler->respond($mapper, $data, 100, 1, 5)->original;
 
         $expected = [
             'status' => 200,
@@ -78,7 +79,15 @@ class ApiTest extends TestCase {
             ]
         ];
 
-        // $expected_response = "{\"status\":200,\"data\":[{\"id\":1,\"text\":\"Enim provident tempore reiciendis quit qui.\",\"active\":true},{\"id\":2,\"text\":\"Provident tempore enim reiciendis quitqui.\",\"active\":false}]}";
+        $response = M::mock('Illuminate\Http\Response');
+        $response->original = $expected;
+        $response->shouldReceive('header')->once()->with('Content-Type', 'text/html')->andReturn($response);
+
+        Response::shouldReceive('make')->once()
+            ->with($expected, 200, [], 0)
+            ->andReturn($response);
+
+        $result = $this->response_handler->respond($mapper, $data, 100, 1, 5)->original;
 
         $this->assertEquals($result, $expected);
     }
@@ -103,7 +112,6 @@ class ApiTest extends TestCase {
 
         $data = new Collection([$m_post_1, $m_post_2]);
 
-        $result = $this->response_handler->respond($mapper, $data, 100, 1, 5)->original;
 
         $expected = [
             'status' => 200,
@@ -123,6 +131,16 @@ class ApiTest extends TestCase {
                 ]
             ]
         ];
+
+        $response = M::mock('Illuminate\Http\Response');
+        $response->original = $expected;
+        $response->shouldReceive('header')->once()->andReturn($response);
+
+        Response::shouldReceive('make')->once()
+            ->with($expected, 200, [], 0)
+            ->andReturn($response);
+
+        $result = $this->response_handler->respond($mapper, $data, 100, 1, 5)->original;
 
         assertEquals($result, $expected);
     }
@@ -173,6 +191,14 @@ class ApiTest extends TestCase {
             ]
         ];
 
+        $response = M::mock('Illuminate\Http\Response');
+        $response->original = $expected;
+        $response->shouldReceive('header')->once()->andReturn($response);
+
+        Response::shouldReceive('make')->once()
+            ->with($expected, 200, [], 0)
+            ->andReturn($response);
+
         $result = $this->response_handler->respond($mapper, $m_paginate)->original;
 
         assertEquals($result, $expected);
@@ -197,6 +223,14 @@ class ApiTest extends TestCase {
                 'active' => true
             ]
         ];
+
+        $response = M::mock('Illuminate\Http\Response');
+        $response->original = $expected;
+        $response->shouldReceive('header')->once()->andReturn($response);
+
+        Response::shouldReceive('make')->once()
+            ->with($expected, 200, [], 0)
+            ->andReturn($response);
 
         $result = $this->response_handler->respond($mapper, $m_post_1)->original;
 
@@ -223,7 +257,16 @@ class ApiTest extends TestCase {
             ]
         ];
 
+        $response = M::mock('Illuminate\Http\Response');
+        $response->shouldReceive('getOriginalContent')->once()->andReturn($expected);
+        $response->shouldReceive('header')->once()->andReturn($response);
+
+        Response::shouldReceive('make')->once()
+            ->with($expected, 200, [], 0)
+            ->andReturn($response);
+
         $result = $this->response_handler->content($mapper, $mPost);
+
         $this->assertInternalType('array', $result);
         $this->assertEquals($expected, $result);
     }
@@ -256,7 +299,16 @@ class ApiTest extends TestCase {
         App::shouldReceive('make')->once()->with('Vinelab\Api\Tests\DummyMapper')
             ->andReturn($mMapper);
 
+        $response = M::mock('Illuminate\Http\Response');
+        $response->shouldReceive('getOriginalContent')->once()->andReturn($expected);
+        $response->shouldReceive('header')->once()->andReturn($response);
+
+        Response::shouldReceive('make')->once()
+            ->with($expected, 200, [], 0)
+            ->andReturn($response);
+
         $result = $this->response_handler->content($mapper, $mPost);
+
         $this->assertInternalType('array', $result);
         $this->assertEquals($expected, $result);
     }
@@ -270,7 +322,6 @@ class ApiTest extends TestCase {
         $mPost->active = true;
         $mPost->shouldReceive('getAttribute')->passthru();
 
-
         $expected = [
             'status' => 200,
             'data'   => [
@@ -280,10 +331,20 @@ class ApiTest extends TestCase {
             ]
         ];
 
+        $response = M::mock('Illuminate\Http\Response');
+        $response->shouldReceive('getOriginalContent')->once()->andReturn($expected);
+        $response->shouldReceive('header')->once()->andReturn($response);
+
+        Response::shouldReceive('make')->once()
+            ->with($expected, 200, [], 0)
+            ->andReturn($response);
+
         $this->response_handler->setMapperNamespace('Vinelab\Api\Tests\\');
+
         $mapper = [new DummyMapper(), 'mapDatThing'];
 
         $result = $this->response_handler->content($mapper, $mPost);
+
         $this->assertInternalType('array', $result);
         $this->assertEquals($expected, $result);
     }

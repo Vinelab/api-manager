@@ -2,8 +2,10 @@
 
 /**
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
+ * @author Abed Halawi <abed.halawi@vinelab.com>
  */
 
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Mockery as M;
@@ -38,6 +40,14 @@ class ErrorHandlerTest extends TestCase {
             ]
         ];
 
+        $response = M::mock('Illuminate\Http\Response');
+        $response->original = $expected;
+        $response->shouldReceive('header')->once()->andReturn($response);
+
+        Response::shouldReceive('make')->once()
+            ->with($expected, $expected['status'], [], 0)
+            ->andReturn($response);
+
         $result = $error_handler->handle($message)->original;
 
         $this->assertEquals($expected, $result);
@@ -55,6 +65,14 @@ class ErrorHandlerTest extends TestCase {
             ]
         ];
 
+        $response = M::mock('Illuminate\Http\Response');
+        $response->original = $expected;
+        $response->shouldReceive('header')->once()->andReturn($response);
+
+        Response::shouldReceive('make')->once()
+            ->with($expected, $expected['status'], [], 0)
+            ->andReturn($response);
+
         $response = $error_handler->handle($exception)->original;
 
         $this->assertEquals($expected, $response);
@@ -71,6 +89,14 @@ class ErrorHandlerTest extends TestCase {
                 'message' => 'some exception'
             ]
         ];
+
+        $response = M::mock('Illuminate\Http\Response');
+        $response->original = $expected;
+        $response->shouldReceive('header')->once()->andReturn($response);
+
+        Response::shouldReceive('make')->once()
+            ->with($expected, $expected['status'], [], 0)
+            ->andReturn($response);
 
         $response = $error_handler->handle($exception, $exception->getCode(), 401)->original;
 

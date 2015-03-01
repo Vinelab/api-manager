@@ -70,7 +70,7 @@ class Api {
     private function readConfigFile()
     {
         // reading the config file to be stored in the 'configurations' variable below
-        $configurations = $this->config_reader->get('api-manager::api');
+        $configurations = $this->config_reader->get('api');
 
         $this->mappers_base_namespace = $configurations['mappers'];
 

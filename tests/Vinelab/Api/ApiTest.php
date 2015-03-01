@@ -27,7 +27,7 @@ class ApiTest extends TestCase {
         $this->error_handler = new ErrorHandler($this->response);
 
         $this->config_reader = M::mock('Illuminate\Config\Repository');
-        $this->config_reader->shouldReceive('get')->with('api-manager::api')
+        $this->config_reader->shouldReceive('get')->with('api')
             ->andReturn(['mappers' => 'Lib\Api\Mappers\\', 'limit' => '50']);
 
         $this->response_handler = new Api($this->response_handler, $this->error_handler, $this->config_reader);

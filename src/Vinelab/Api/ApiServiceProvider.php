@@ -23,7 +23,9 @@ class ApiServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-
+        $this->publishes([
+            __DIR__.'/../../config/api.php' => config_path('api.php')
+        ]);
 	}
 
 	/**

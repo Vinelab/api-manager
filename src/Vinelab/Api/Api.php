@@ -5,7 +5,8 @@
  * @author Abed Halawi <halawi.abed@gmail.com>
  */
 
-use Illuminate\Pagination\Paginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Collection;
 use Illuminate\Config\Repository;
@@ -92,11 +93,11 @@ class Api {
         $arguments = [];
         // if data is instance of Paginator then get the values of the total and the page from the paginator,
         // and add them to the arguments array (total, page)
-        if ($data instanceof Paginator)
+        if (($data instanceof Paginator) || ($data instanceof LengthAwarePaginator))
         {
-            $arguments[0] = $data->getTotal();
-            $arguments[1] = $data->getCurrentPage();
-            $arguments[2] = $data->getPerPage();
+            $arguments[0] = $data->total();
+            $arguments[1] = $data->currentPage();
+            $arguments[2] = $data->perPage();
         }
 
         // skip the first 2 arguments and save the rest to the 'arguments array':

@@ -139,7 +139,7 @@ class Api
         // First we check whether we've been passed an array in which case we consider the array to be ['mapper',
         // 'method'] where 'mapper' can either be the mapper class name as a string or the actual instance.
         $method = 'map';
-        if (is_array($mapper) and count($mapper) == 2) {
+        if (is_array($mapper) && count($mapper) == 2) {
             $instance = $mapper[0];
             $method = $mapper[1];
             $mapper = $instance;

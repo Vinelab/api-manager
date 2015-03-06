@@ -39,7 +39,7 @@ class ErrorHandler
         if (is_string($exception)) {
             $message = $exception;
         } // This is a generic, non-supported exception so we'll just treat it as so.
-        elseif ($exception instanceof Exception or $exception instanceof RuntimeException) {
+        elseif ($exception instanceof Exception || $exception instanceof RuntimeException) {
             $code = $exception->getCode();
             $message = $exception->getMessage();
         } // if not Exception or RuntimeException or a string then throw and API exception

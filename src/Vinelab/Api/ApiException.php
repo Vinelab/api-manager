@@ -4,6 +4,7 @@
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
  */
 
-class ApiException extends \Exception{
+class ApiException extends \Exception
+{
 
 }

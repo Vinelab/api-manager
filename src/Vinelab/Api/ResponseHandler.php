@@ -1,8 +1,8 @@
 <?php namespace Vinelab\Api;
 
 /**
- * @author  Abed Halawi <halawi.abed@gmail.com>
  * @author  Mahmoud Zalt <mahmoud@vinelab.com>
+ * @author  Abed Halawi <abed.halawi@vinelab.com>
  */
 
 class ResponseHandler
@@ -22,7 +22,7 @@ class ResponseHandler
     }
 
     /**
-     * Format a response into an elegant apimanager response.
+     * Format a response into an elegant api manager response.
      *
      * @param array $data
      * @param null  $total
@@ -41,18 +41,22 @@ class ResponseHandler
         $page = null,
         $per_page = null,
         $status = 200,
-        $headers = [ ],
+        $headers = [],
         $options = 0
     ) {
         $response = [
             'status' => $status,
         ];
-
-        if ( ! is_null($total)) $response['total'] = $total;
-        if ( ! is_null($page)) $response['page'] = $page;
-        if ( ! is_null($per_page)) $response['per_page'] = $per_page;
-
-        $response[ 'data' ] = $data;
+        if (!is_null($total)) {
+            $response['total'] = $total;
+        }
+        if (!is_null($page)) {
+            $response['page'] = $page;
+        }
+        if (!is_null($per_page)) {
+            $response['per_page'] = $per_page;
+        }
+        $response['data'] = $data;
 
         return $this->responder->respond($response, $status, $headers, $options);
     }

@@ -34,7 +34,7 @@ class ErrorHandler
      * @return \Illuminate\Http\JsonResponse|string
      * @throws \Vinelab\Api\ApiException
      */
-    public function handle($exception, $code = 0, $status = 500, $headers = [ ], $options = 0)
+    public function handle($exception, $code = 0, $status = 500, $headers = [], $options = 0)
     {
         if (is_string($exception)) {
             $message = $exception;

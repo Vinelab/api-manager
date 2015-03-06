@@ -1,15 +1,15 @@
 <?php namespace Vinelab\Api;
 
 /**
- * @author Mahmoud Zalt <inbox@mahmoudzalt.com>
- * @author Abed Halawi <halawi.abed@gmail.com>
+ * @author Mahmoud Zalt <mahmoud@vinelab.com>
+ * @author Abed Halawi <abed.halawi@vinelab.com>
  */
 
+use Illuminate\Config\Repository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Collection;
-use Illuminate\Config\Repository;
+use Illuminate\Support\Facades\App;
 use Input;
 
 /**
@@ -69,8 +69,8 @@ class Api
     {
         // reading the config file to be stored in the 'configurations' variable below
         $configurations = $this->config_reader->get('api');
-        $this->mappers_base_namespace = $configurations[ 'mappers' ];
-        $this->limit = $configurations[ 'limit' ];
+        $this->mappers_base_namespace = $configurations['mappers'];
+        $this->limit = $configurations['limit'];
     }
 
     /**
@@ -85,13 +85,13 @@ class Api
      */
     public function respond($mapper, $data)
     {
-        $arguments = [ ];
+        $arguments = [];
         // if data is instance of Paginator then get the values of the total and the page from the paginator,
         // and add them to the arguments array (total, page)
         if ($this->isPaginatorInstance($data)) {
-            $arguments[ 0 ] = $data->total();
-            $arguments[ 1 ] = $data->currentPage();
-            $arguments[ 2 ] = $data->perPage();
+            $arguments[0] = $data->total();
+            $arguments[1] = $data->currentPage();
+            $arguments[2] = $data->perPage();
         }
         // skip the first 2 arguments and save the rest to the 'arguments array':
         // > in case data is instance of Paginator then this will append all the arguments to the 'arguments array'
@@ -100,11 +100,11 @@ class Api
         // arguments) then this will add all the arguments to the 'arguments array' starting by the third arguments
         // which should be the 'page'.
         foreach (array_slice(func_get_args(), 2) as $arg) {
-            $arguments[ count($arguments) ] = $arg;
+            $arguments[count($arguments)] = $arg;
         }
-        $result[ ] = $this->data($mapper, $data);
+        $result[] = $this->data($mapper, $data);
 
-        return call_user_func_array([ $this->response_handler, 'respond' ], array_merge($result, $arguments));
+        return call_user_func_array([$this->response_handler, 'respond'], array_merge($result, $arguments));
     }
 
     /**
@@ -134,14 +134,14 @@ class Api
             || (($this->isPaginatorInstance($data)) && $data->isEmpty())
             || ($data instanceof Collection && $data->isEmpty())
         ) {
-            return [ ];
+            return [];
         }
         // First we check whether we've been passed an array in which case we consider the array to be ['mapper',
         // 'method'] where 'mapper' can either be the mapper class name as a string or the actual instance.
         $method = 'map';
         if (is_array($mapper) and count($mapper) == 2) {
-            $instance = $mapper[ 0 ];
-            $method = $mapper[ 1 ];
+            $instance = $mapper[0];
+            $method = $mapper[1];
             $mapper = $instance;
         }
         // check whether $mapper is an actual mapper instance, otherwise
@@ -157,7 +157,7 @@ class Api
 
         // call the map function of the mapper for each data in the $data array
         return (is_array($data) && !$this->isAssocArray($data)) ?
-            array_map([ $mapper, $method ], $data) : $mapper->$method($data);
+            array_map([$mapper, $method], $data) : $mapper->$method($data);
     }
 
     /**
@@ -204,7 +204,7 @@ class Api
      */
     public function content($mapper, $data)
     {
-        $response = call_user_func_array([ $this, 'respond' ], func_get_args());
+        $response = call_user_func_array([$this, 'respond'], func_get_args());
 
         return $response->getOriginalContent();
     }
@@ -216,7 +216,7 @@ class Api
      */
     public function error()
     {
-        return call_user_func_array([ $this->error, 'handle' ], func_get_args());
+        return call_user_func_array([$this->error, 'handle'], func_get_args());
     }
 
     /**

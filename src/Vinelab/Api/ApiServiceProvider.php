@@ -4,6 +4,7 @@
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
  * @author Abed Halawi <abed.halawi@vinelab.com>
  */
+
 use Illuminate\Support\ServiceProvider;
 
 class ApiServiceProvider extends ServiceProvider
@@ -36,7 +37,7 @@ class ApiServiceProvider extends ServiceProvider
     public function register()
     {
         // Register the 'Api' class using the container so that we can resolve it accordingly.
-        $this->app[ 'vinelab.api' ] = $this->app->share(function () {
+        $this->app['vinelab.api'] = $this->app->share(function () {
             return $this->app->make('Vinelab\Api\Api');
         });
         // Shortcut so developers don't need to add an alias in app/config/app.php
@@ -54,7 +55,7 @@ class ApiServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return array( 'vinelab.api' );
+        return array('vinelab.api');
     }
 
 }

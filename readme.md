@@ -4,6 +4,7 @@
 [![Latest Unstable Version](https://poser.pugx.org/vinelab/api-manager/v/unstable.svg)](https://packagist.org/packages/vinelab/api-manager)
 [![License](https://poser.pugx.org/vinelab/api-manager/license.svg)](https://packagist.org/packages/vinelab/api-manager)
 [![Build Status](https://travis-ci.org/Vinelab/api-manager.svg)](https://travis-ci.org/Vinelab/api-manager)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Vinelab/api-manager/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Vinelab/api-manager/?branch=master)
 
 # API Manager
 

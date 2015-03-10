@@ -258,7 +258,7 @@ class ApiTest extends TestCase {
         ];
 
         $response = M::mock('Illuminate\Http\Response');
-        $response->shouldReceive('getOriginalContent')->once()->andReturn($expected);
+        $response->shouldReceive('getData')->once()->andReturn($expected);
         $response->shouldReceive('header')->once()->andReturn($response);
 
         Response::shouldReceive('make')->once()
@@ -300,7 +300,7 @@ class ApiTest extends TestCase {
             ->andReturn($mMapper);
 
         $response = M::mock('Illuminate\Http\Response');
-        $response->shouldReceive('getOriginalContent')->once()->andReturn($expected);
+        $response->shouldReceive('getData')->once()->andReturn($expected);
         $response->shouldReceive('header')->once()->andReturn($response);
 
         Response::shouldReceive('make')->once()
@@ -332,7 +332,7 @@ class ApiTest extends TestCase {
         ];
 
         $response = M::mock('Illuminate\Http\Response');
-        $response->shouldReceive('getOriginalContent')->once()->andReturn($expected);
+        $response->shouldReceive('getData')->once()->andReturn($expected);
         $response->shouldReceive('header')->once()->andReturn($response);
 
         Response::shouldReceive('make')->once()

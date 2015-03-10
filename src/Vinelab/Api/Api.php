@@ -206,7 +206,7 @@ class Api
     {
         $response = call_user_func_array([$this, 'respond'], func_get_args());
 
-        return $response->getOriginalContent();
+        return $response->getData();
     }
 
     /**

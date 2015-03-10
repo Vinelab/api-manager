@@ -4,10 +4,11 @@
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
  */
 
-use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 
-class Responder {
+class Responder
+{
 
     /**
      * @param \Illuminate\Http\Request $request
@@ -27,27 +28,26 @@ class Responder {
      */
     public function respond($response, $status, $headers, $options)
     {
-        // Default is JSON
-        switch ($this->getRequestFormat())
-        {
-            case 'html':
+        switch ($this->getRequestFormat()) {
+            case 'html' :
+            case 'text/html' :
                 return Response::make($response, $status, $headers, $options)
                     ->header('Content-Type', 'text/html');
-
             default :
+                // whether 'Content-Type' is NULL or equal to anything such as 'application/json' response will be JSON
                 return Response::json($response, $status, $headers, $options);
         }
 
     }
 
     /**
-     * Get url format from the content type header property
+     * Get request format from the content type header property
      *
-     * @return mixed
+     * @return string
      */
     public function getRequestFormat()
     {
-        return $this->request->format();
+        return $this->request->header('Content-Type');
     }
 
 }

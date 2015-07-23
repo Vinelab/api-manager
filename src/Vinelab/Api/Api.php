@@ -1,6 +1,8 @@
-<?php namespace Vinelab\Api;
+<?php
 
-/**
+namespace Vinelab\Api;
+
+/*
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
  * @author Abed Halawi <abed.halawi@vinelab.com>
  */
@@ -13,12 +15,10 @@ use Illuminate\Support\Facades\App;
 use Input;
 
 /**
- * Class Api
- * @package Vinelab\Api
+ * Class Api.
  */
 class Api
 {
-
     /**
      * @var int
      */
@@ -44,7 +44,6 @@ class Api
      */
     private $config_reader;
 
-
     /**
      * @param \Vinelab\Api\ResponseHandler  $response_handler
      * @param \Vinelab\Api\ErrorHandler     $error_handler
@@ -63,7 +62,7 @@ class Api
     }
 
     /**
-     * get config file values and store them in attributes
+     * get config file values and store them in attributes.
      */
     private function readConfigFile()
     {
@@ -74,7 +73,7 @@ class Api
     }
 
     /**
-     * Map and respond
+     * Map and respond.
      *
      * @param string|mixed $mapper
      * @param mixed        $data
@@ -108,7 +107,7 @@ class Api
     }
 
     /**
-     * check if $data is instance of Laravel Paginator
+     * check if $data is instance of Laravel Paginator.
      *
      * @param $data
      *
@@ -122,8 +121,8 @@ class Api
     /**
      * Get the formatted data out of the given mapper and data.
      *
-     * @param  string|mixed $mapper
-     * @param  mixed        $data
+     * @param string|mixed $mapper
+     * @param mixed        $data
      *
      * @return array
      */
@@ -163,17 +162,17 @@ class Api
     /**
      * Resolve a class name of a mapper into the actual instance.
      *
-     * @param  string $classname
+     * @param string $classname
      *
      * @return mixed
      */
     private function resolveMapperClassName($classname)
     {
-        return App::make($this->getMapperNamespace() . $classname);
+        return App::make($this->getMapperNamespace().$classname);
     }
 
     /**
-     * get the value of mappers_base_namespace from the config file
+     * get the value of mappers_base_namespace from the config file.
      *
      * @return string
      */
@@ -185,7 +184,7 @@ class Api
     /**
      * Check whether the given array is an associative array (key-value).
      *
-     * @param  array $array
+     * @param array $array
      *
      * @return bool
      */
@@ -197,8 +196,8 @@ class Api
     /**
      * Get the content only from the response.
      *
-     * @param  mixed $mapper
-     * @param  mixed $data
+     * @param mixed $mapper
+     * @param mixed $data
      *
      * @return array
      */
@@ -220,7 +219,7 @@ class Api
     }
 
     /**
-     * this function will be accessed as facade from anywhere to get the limit number of data for the endpoint call
+     * this function will be accessed as facade from anywhere to get the limit number of data for the endpoint call.
      *
      * @return int
      */
@@ -238,14 +237,14 @@ class Api
     }
 
     /**
-     * get the limit value from the config file which represents the default and the maximum limit
+     * get the limit value from the config file which represents the default and the maximum limit.
      *
      * @return int
      */
     public function getMaximumLimit()
     {
         // get the default limit value of results per request from the config file
-        return (int)$this->limit;
+        return (int) $this->limit;
     }
 
     /**
@@ -263,25 +262,23 @@ class Api
         $limit = $this->getMaximumLimit();
 
         // check if limit value exceed the allowed predefined default limit value
-        return ($request_limit <= $limit) ? (int)$request_limit : (int)$limit;
+        return ($request_limit <= $limit) ? (int) $request_limit : (int) $limit;
     }
 
     /**
-     * override the limit of the config file
+     * override the limit of the config file.
      *
      * @param $limit
      */
     public function setLimit($limit)
     {
-        $this->limit = (int)$limit;
+        $this->limit = (int) $limit;
     }
 
     /**
      * Set the base namespace from which to resolve mappers.
      *
      * @param string $namespace
-     *
-     * @return void
      */
     public function setMapperNamespace($namespace)
     {

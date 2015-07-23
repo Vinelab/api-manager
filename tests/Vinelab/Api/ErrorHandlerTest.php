@@ -1,17 +1,18 @@
-<?php namespace Vinelab\Api\Tests;
+<?php
 
-/**
+namespace Vinelab\Api\Tests;
+
+/*
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
  * @author Abed Halawi <abed.halawi@vinelab.com>
  */
 
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Mockery as M;
 
-class ErrorHandlerTest extends TestCase {
-
+class ErrorHandlerTest extends TestCase
+{
     public function setUp()
     {
         $this->request = new Request();
@@ -28,16 +29,15 @@ class ErrorHandlerTest extends TestCase {
 
     public function testErrorHandlerWithMessage()
     {
-
-        $message = "Something went wrong";
+        $message = 'Something went wrong';
         $error_handler = new \Vinelab\Api\ErrorHandler($this->responder);
 
         $expected = [
             'status' => 500,
-            'error'  => [
+            'error' => [
                 'code' => 0,
                 'message' => $message,
-            ]
+            ],
         ];
 
         $response = M::mock('Illuminate\Http\Response');
@@ -59,10 +59,10 @@ class ErrorHandlerTest extends TestCase {
         $error_handler = new \Vinelab\Api\ErrorHandler($this->responder);
         $expected = [
             'status' => 500,
-            'error'  => [
+            'error' => [
                 'code' => 0,
-                'message' => 'testing exception'
-            ]
+                'message' => 'testing exception',
+            ],
         ];
 
         $response = M::mock('Illuminate\Http\Response');
@@ -84,10 +84,10 @@ class ErrorHandlerTest extends TestCase {
         $error_handler = new \Vinelab\Api\ErrorHandler($this->responder);
         $expected = [
             'status' => 401,
-            'error'  => [
+            'error' => [
                 'code' => 1001,
-                'message' => 'some exception'
-            ]
+                'message' => 'some exception',
+            ],
         ];
 
         $response = M::mock('Illuminate\Http\Response');
@@ -103,5 +103,4 @@ class ErrorHandlerTest extends TestCase {
         $this->assertEquals($expected, $response);
         $this->assertInternalType('int', $response['status']);
     }
-
 }

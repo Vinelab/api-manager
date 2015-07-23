@@ -1,6 +1,8 @@
-<?php namespace Vinelab\Api;
+<?php
 
-/**
+namespace Vinelab\Api;
+
+/*
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
  * @author Abed Halawi <abed.halawi@vinelab.com>
  */
@@ -9,7 +11,6 @@ use Illuminate\Support\ServiceProvider;
 
 class ApiServiceProvider extends ServiceProvider
 {
-
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -19,20 +20,16 @@ class ApiServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap the application events.
-     *
-     * @return void
      */
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../../config/api.php' => config_path('api.php')
+            __DIR__.'/../../config/api.php' => config_path('api.php'),
         ]);
     }
 
     /**
      * Register the service provider.
-     *
-     * @return void
      */
     public function register()
     {
@@ -45,7 +42,6 @@ class ApiServiceProvider extends ServiceProvider
             $loader = \Illuminate\Foundation\AliasLoader::getInstance();
             $loader->alias('Api', 'Vinelab\Api\ApiFacadeAccessor');
         });
-
     }
 
     /**
@@ -57,5 +53,4 @@ class ApiServiceProvider extends ServiceProvider
     {
         return array('vinelab.api');
     }
-
 }

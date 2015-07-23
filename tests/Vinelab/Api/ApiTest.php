@@ -1,6 +1,8 @@
-<?php namespace Vinelab\Api\Tests;
+<?php
 
-/**
+namespace Vinelab\Api\Tests;
+
+/*
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
  * @author Abed Halawi <abed.halawi@vinelab.com>
  */
@@ -15,8 +17,8 @@ use Vinelab\Api\ResponseHandler;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Response;
 
-class ApiTest extends TestCase {
-
+class ApiTest extends TestCase
+{
     public function setUp()
     {
         parent::setUp();
@@ -59,24 +61,23 @@ class ApiTest extends TestCase {
 
         $data = new Collection([$m_post_1, $m_post_2]);
 
-
         $expected = [
             'status' => 200,
             'total' => 100,
             'page' => 1,
             'per_page' => 5,
-            'data'   => [
+            'data' => [
                 [
-                    'id'     => 1,
-                    'text'   => 'Enim provident tempore reiciendis quit qui.',
-                    'active' => true
+                    'id' => 1,
+                    'text' => 'Enim provident tempore reiciendis quit qui.',
+                    'active' => true,
                 ],
                 [
-                    'id'     => 2,
-                    'text'   => 'Provident tempore enim reiciendis quitqui.',
-                    'active' => false
-                ]
-            ]
+                    'id' => 2,
+                    'text' => 'Provident tempore enim reiciendis quitqui.',
+                    'active' => false,
+                ],
+            ],
         ];
 
         $response = M::mock('Illuminate\Http\Response');
@@ -112,7 +113,6 @@ class ApiTest extends TestCase {
 
         $data = new Collection([$m_post_1, $m_post_2]);
 
-
         $expected = [
             'status' => 200,
             'total' => 100,
@@ -120,16 +120,16 @@ class ApiTest extends TestCase {
             'per_page' => 5,
             'data' => [
                 [
-                    'id'     => 1,
-                    'text'   => 'Enim provident tempore reiciendis quit qui.',
-                    'active' => true
+                    'id' => 1,
+                    'text' => 'Enim provident tempore reiciendis quit qui.',
+                    'active' => true,
                 ],
                 [
-                    'id'     => 2,
-                    'text'   => 'Provident tempore enim reiciendis quitqui.',
-                    'active' => false
-                ]
-            ]
+                    'id' => 2,
+                    'text' => 'Provident tempore enim reiciendis quitqui.',
+                    'active' => false,
+                ],
+            ],
         ];
 
         $response = M::mock('Illuminate\Http\Response');
@@ -144,7 +144,6 @@ class ApiTest extends TestCase {
 
         assertEquals($result, $expected);
     }
-
 
     public function testRespondWithPaginator()
     {
@@ -174,21 +173,21 @@ class ApiTest extends TestCase {
 
         $expected = [
             'status' => 200,
-            'total' =>  300,
+            'total' => 300,
             'page' => 1,
             'per_page' => 25,
             'data' => [
                 [
-                    'id'     => 1,
-                    'text'   => 'Enim provident tempore reiciendis quit qui.',
-                    'active' => true
+                    'id' => 1,
+                    'text' => 'Enim provident tempore reiciendis quit qui.',
+                    'active' => true,
                 ],
                 [
-                    'id'     => 2,
-                    'text'   => 'Provident tempore enim reiciendis quitqui.',
-                    'active' => false
-                ]
-            ]
+                    'id' => 2,
+                    'text' => 'Provident tempore enim reiciendis quitqui.',
+                    'active' => false,
+                ],
+            ],
         ];
 
         $response = M::mock('Illuminate\Http\Response');
@@ -204,7 +203,6 @@ class ApiTest extends TestCase {
         assertEquals($result, $expected);
     }
 
-
     public function testRespondWithModel()
     {
         $m_post_1 = M::mock('Post');
@@ -217,11 +215,11 @@ class ApiTest extends TestCase {
         $mapper = new DummyMapper();
         $expected = [
             'status' => 200,
-            'data'   => [
-                'id'     => 1,
-                'text'   => 'Enim provident tempore reiciendis quit qui.',
-                'active' => true
-            ]
+            'data' => [
+                'id' => 1,
+                'text' => 'Enim provident tempore reiciendis quit qui.',
+                'active' => true,
+            ],
         ];
 
         $response = M::mock('Illuminate\Http\Response');
@@ -250,11 +248,11 @@ class ApiTest extends TestCase {
 
         $expected = [
             'status' => 200,
-            'data'   => [
-                'id'     => 1,
-                'text'   => 'Enim provident tempore reiciendis quit qui.',
-                'active' => true
-            ]
+            'data' => [
+                'id' => 1,
+                'text' => 'Enim provident tempore reiciendis quit qui.',
+                'active' => true,
+            ],
         ];
 
         $response = M::mock('Illuminate\Http\Response');
@@ -280,14 +278,13 @@ class ApiTest extends TestCase {
         $mPost->active = true;
         $mPost->shouldReceive('getAttribute')->passthru();
 
-
         $expected = [
             'status' => 200,
-            'data'   => [
-                'id'     => 1,
-                'text'   => 'Enim provident tempore reiciendis quit qui.',
-                'active' => true
-            ]
+            'data' => [
+                'id' => 1,
+                'text' => 'Enim provident tempore reiciendis quit qui.',
+                'active' => true,
+            ],
         ];
 
         $this->response_handler->setMapperNamespace('Vinelab\Api\Tests\\');
@@ -324,11 +321,11 @@ class ApiTest extends TestCase {
 
         $expected = [
             'status' => 200,
-            'data'   => [
-                'id'     => 1,
-                'text'   => 'Enim provident tempore reiciendis quit qui.',
-                'active' => true
-            ]
+            'data' => [
+                'id' => 1,
+                'text' => 'Enim provident tempore reiciendis quit qui.',
+                'active' => true,
+            ],
         ];
 
         $response = M::mock('Illuminate\Http\Response');
@@ -367,16 +364,16 @@ class ApiTest extends TestCase {
     }
 }
 
-class DummyMapper {
-
+class DummyMapper
+{
     use \Vinelab\Api\MappableTrait;
 
     public function map($data)
     {
         return [
-            'id'     => (int) $data->id,
-            'text'   => $data->text,
-            'active' => (boolean) $data->active
+            'id' => (int) $data->id,
+            'text' => $data->text,
+            'active' => (boolean) $data->active,
         ];
     }
 

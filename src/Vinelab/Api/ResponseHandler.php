@@ -1,13 +1,13 @@
-<?php namespace Vinelab\Api;
+<?php
+
+namespace Vinelab\Api;
 
 /**
  * @author  Mahmoud Zalt <mahmoud@vinelab.com>
  * @author  Abed Halawi <abed.halawi@vinelab.com>
  */
-
 class ResponseHandler
 {
-
     /**
      * @var Responder instance
      */
@@ -33,6 +33,7 @@ class ResponseHandler
      * @param int   $options
      *
      * @internal param $arguments
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function respond(

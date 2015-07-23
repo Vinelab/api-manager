@@ -1,6 +1,8 @@
-<?php namespace Vinelab\Api;
+<?php
 
-/**
+namespace Vinelab\Api;
+
+/*
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
  * @author Abed Halawi <abed.halawi@vinelab.com>
  */
@@ -10,7 +12,6 @@ use RuntimeException;
 
 class ErrorHandler
 {
-
     /**
      * @var Responder instance
      */
@@ -32,6 +33,7 @@ class ErrorHandler
      * @param int   $options
      *
      * @return \Illuminate\Http\JsonResponse|string
+     *
      * @throws \Vinelab\Api\ApiException
      */
     public function handle($exception, $code = 0, $status = 500, $headers = [], $options = 0)
@@ -45,11 +47,11 @@ class ErrorHandler
         } // if not Exception or RuntimeException or a string then throw and API exception
         else {
             throw new ApiException('Argument 1 passed Vinelab\Api\ErrorHandler::handle() must be an instance of
-                                    Exception or RuntimeException or a string, ' . get_class($exception) . ' is given.');
+                                    Exception or RuntimeException or a string, '.get_class($exception).' is given.');
         }
         $response = [
             'status' => $status,
-            'error'  => compact('message', 'code')
+            'error' => compact('message', 'code'),
         ];
 
         return $this->responder->respond($response, $status, $headers, $options);

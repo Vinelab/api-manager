@@ -1,10 +1,11 @@
-<?php namespace Vinelab\Api;
+<?php
+
+namespace Vinelab\Api;
 
 /**
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
  */
-
 trait MappableTrait
 {
-    public abstract function map($data);
+    abstract public function map($data);
 }

@@ -1,6 +1,8 @@
-<?php namespace Vinelab\Api;
+<?php
 
-/**
+namespace Vinelab\Api;
+
+/*
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
  */
 
@@ -9,7 +11,6 @@ use Illuminate\Support\Facades\Response;
 
 class Responder
 {
-
     /**
      * @param \Illuminate\Http\Request $request
      */
@@ -37,11 +38,10 @@ class Responder
                 // whether 'Content-Type' is NULL or equal to anything such as 'application/json' response will be JSON
                 return Response::json($response, $status, $headers, $options);
         }
-
     }
 
     /**
-     * Get request format from the content type header property
+     * Get request format from the content type header property.
      *
      * @return string
      */
@@ -49,5 +49,4 @@ class Responder
     {
         return $this->request->header('Content-Type');
     }
-
 }

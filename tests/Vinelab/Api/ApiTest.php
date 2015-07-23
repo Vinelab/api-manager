@@ -2,7 +2,7 @@
 
 namespace Vinelab\Api\Tests;
 
-/*
+/**
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
  * @author Abed Halawi <abed.halawi@vinelab.com>
  */
@@ -82,9 +82,8 @@ class ApiTest extends TestCase
 
         $response = M::mock('Illuminate\Http\Response');
         $response->original = $expected;
-        $response->shouldReceive('header')->once()->with('Content-Type', 'text/html')->andReturn($response);
 
-        Response::shouldReceive('make')->once()
+        Response::shouldReceive('json')->once()
             ->with($expected, 200, [], 0)
             ->andReturn($response);
 
@@ -134,9 +133,8 @@ class ApiTest extends TestCase
 
         $response = M::mock('Illuminate\Http\Response');
         $response->original = $expected;
-        $response->shouldReceive('header')->once()->andReturn($response);
 
-        Response::shouldReceive('make')->once()
+        Response::shouldReceive('json')->once()
             ->with($expected, 200, [], 0)
             ->andReturn($response);
 
@@ -164,10 +162,11 @@ class ApiTest extends TestCase
         $data = ([$m_post_1, $m_post_2]);
 
         $m_paginate = M::mock('Illuminate\Pagination\Paginator');
-        $m_paginate->shouldReceive('getTotal')->once()->andReturn(300);
-        $m_paginate->shouldReceive('getCurrentPage')->once()->andReturn(1);
-        $m_paginate->shouldReceive('getPerPage')->once()->andReturn(25);
+        $m_paginate->shouldReceive('total')->once()->andReturn(300);
+        $m_paginate->shouldReceive('currentPage')->once()->andReturn(1);
+        $m_paginate->shouldReceive('perPage')->once()->andReturn(25);
         $m_paginate->shouldReceive('all')->andReturn($data);
+        $m_paginate->shouldReceive('isEmpty')->andReturn(false);
 
         $mapper = new DummyMapper();
 
@@ -192,9 +191,8 @@ class ApiTest extends TestCase
 
         $response = M::mock('Illuminate\Http\Response');
         $response->original = $expected;
-        $response->shouldReceive('header')->once()->andReturn($response);
 
-        Response::shouldReceive('make')->once()
+        Response::shouldReceive('json')->once()
             ->with($expected, 200, [], 0)
             ->andReturn($response);
 
@@ -224,9 +222,8 @@ class ApiTest extends TestCase
 
         $response = M::mock('Illuminate\Http\Response');
         $response->original = $expected;
-        $response->shouldReceive('header')->once()->andReturn($response);
 
-        Response::shouldReceive('make')->once()
+        Response::shouldReceive('json')->once()
             ->with($expected, 200, [], 0)
             ->andReturn($response);
 
@@ -257,9 +254,8 @@ class ApiTest extends TestCase
 
         $response = M::mock('Illuminate\Http\Response');
         $response->shouldReceive('getData')->once()->andReturn($expected);
-        $response->shouldReceive('header')->once()->andReturn($response);
 
-        Response::shouldReceive('make')->once()
+        Response::shouldReceive('json')->once()
             ->with($expected, 200, [], 0)
             ->andReturn($response);
 
@@ -298,9 +294,8 @@ class ApiTest extends TestCase
 
         $response = M::mock('Illuminate\Http\Response');
         $response->shouldReceive('getData')->once()->andReturn($expected);
-        $response->shouldReceive('header')->once()->andReturn($response);
 
-        Response::shouldReceive('make')->once()
+        Response::shouldReceive('json')->once()
             ->with($expected, 200, [], 0)
             ->andReturn($response);
 
@@ -330,9 +325,8 @@ class ApiTest extends TestCase
 
         $response = M::mock('Illuminate\Http\Response');
         $response->shouldReceive('getData')->once()->andReturn($expected);
-        $response->shouldReceive('header')->once()->andReturn($response);
 
-        Response::shouldReceive('make')->once()
+        Response::shouldReceive('json')->once()
             ->with($expected, 200, [], 0)
             ->andReturn($response);
 

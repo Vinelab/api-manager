@@ -42,9 +42,8 @@ class ErrorHandlerTest extends TestCase
 
         $response = M::mock('Illuminate\Http\Response');
         $response->original = $expected;
-        $response->shouldReceive('header')->once()->andReturn($response);
 
-        Response::shouldReceive('make')->once()
+        Response::shouldReceive('json')->once()
             ->with($expected, $expected['status'], [], 0)
             ->andReturn($response);
 
@@ -67,9 +66,8 @@ class ErrorHandlerTest extends TestCase
 
         $response = M::mock('Illuminate\Http\Response');
         $response->original = $expected;
-        $response->shouldReceive('header')->once()->andReturn($response);
 
-        Response::shouldReceive('make')->once()
+        Response::shouldReceive('json')->once()
             ->with($expected, $expected['status'], [], 0)
             ->andReturn($response);
 
@@ -92,9 +90,8 @@ class ErrorHandlerTest extends TestCase
 
         $response = M::mock('Illuminate\Http\Response');
         $response->original = $expected;
-        $response->shouldReceive('header')->once()->andReturn($response);
 
-        Response::shouldReceive('make')->once()
+        Response::shouldReceive('json')->once()
             ->with($expected, $expected['status'], [], 0)
             ->andReturn($response);
 

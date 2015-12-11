@@ -165,7 +165,7 @@ class ApiTest extends TestCase
         $m_paginate->shouldReceive('total')->once()->andReturn(300);
         $m_paginate->shouldReceive('currentPage')->once()->andReturn(1);
         $m_paginate->shouldReceive('perPage')->once()->andReturn(25);
-        $m_paginate->shouldReceive('all')->andReturn($data);
+        $m_paginate->shouldReceive('items')->andReturn($data);
         $m_paginate->shouldReceive('isEmpty')->andReturn(false);
 
         $mapper = new DummyMapper();

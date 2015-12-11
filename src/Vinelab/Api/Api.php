@@ -150,8 +150,10 @@ class Api
         }
         // In the case of a Collection or Paginator all we need is the data as a
         // Traversable so that we iterate and map each item.
-        if ($data instanceof Collection || $this->isPaginatorInstance($data)) {
+        if ($data instanceof Collection) {
             $data = $data->all();
+        } elseif ($this->isPaginatorInstance($data)) {
+            $data = $data->items();
         }
 
         // call the map function of the mapper for each data in the $data array
